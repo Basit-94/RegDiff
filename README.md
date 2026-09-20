@@ -5,7 +5,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react)](https://reactjs.org)
 [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
-[![License](https://img.shields.io/badge/License-MIT-purple?style=flat-square)](LICENSE)
+[![License: Proprietary](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg?style=flat-square)](LICENSE)
 
 > **When laws shift, your policies stay compliant.** RegDiff is an automated compliance intelligence platform that continuously ingests corporate agreements and handbooks, detects statutory breaches using deterministic AST engines, generates ready-to-merge Track Changes redlines, and anchors immutable attestation receipts to a cryptographic Merkle ledger.
 
@@ -30,29 +30,29 @@
 ```mermaid
 flowchart TD
     subgraph Ingestion["1. Continuous Ingestion"]
-        A[SharePoint / OneDrive] --> Ingest[Ingest & Extraction Engine]
-        B[Google Workspace Drive] --> Ingest
-        C[DocuSign / Ironclad CLM] --> Ingest
-        D[Manual PDF / DOCX / Text] --> Ingest
+        A["SharePoint / OneDrive"] --> Ingest["Ingest & Extraction Engine"]
+        B["Google Workspace Drive"] --> Ingest
+        C["DocuSign / Ironclad CLM"] --> Ingest
+        D["Manual PDF / DOCX / Text"] --> Ingest
     end
 
     subgraph Engine["2. Deterministic AST Analysis"]
-        Ingest --> AST[Multi-Statute AST Rule Engine]
-        Rules[Custom Policy Compiler] --> AST
-        Sentinel[Federal Register & EUR-Lex Worker] --> AST
+        Ingest --> AST["Multi-Statute AST Rule Engine"]
+        Rules["Custom Policy Compiler"] --> AST
+        Sentinel["Federal Register & EUR-Lex Worker"] --> AST
     end
 
     subgraph Remediation["3. Autonomous Remediation"]
-        AST --> Redline[Unified Diff & Track Changes .docx]
-        AST --> Notice[Opposing Counsel Notice Letter]
-        AST --> CICD[Policy Gate CI/CD PR Blocker]
+        AST --> Redline["Unified Diff & Track Changes .docx"]
+        AST --> Notice["Opposing Counsel Notice Letter"]
+        AST --> CICD["Policy Gate CI/CD PR Blocker"]
     end
 
     subgraph Verification["4. Cryptographic Proof & GRC"]
-        Redline --> Merkle[FRE 902(13) Merkle Ledger]
-        Merkle --> GRC[Vanta / Drata GRC Evidence]
-        Merkle --> InsurTech[InsurTech Actuarial Risk Index]
-        Merkle --> Portal[Zero-Auth Public Verification Portal]
+        Redline --> Merkle["FRE 902(13) Merkle Ledger"]
+        Merkle --> GRC["Vanta / Drata GRC Evidence"]
+        Merkle --> InsurTech["InsurTech Actuarial Risk Index"]
+        Merkle --> Portal["Zero-Auth Public Verification Portal"]
     end
 ```
 
@@ -116,5 +116,6 @@ pytest backend/tests
 
 ---
 
-## 📄 License
-Distributed under the MIT License. See `LICENSE` for more information.
+## 📄 License & Intellectual Property
+Copyright © 2026 **Abdul Basit**. All Rights Reserved.  
+This project is proprietary and confidential. Unauthorized copying, modification, redistribution, or commercial use without explicit permission is strictly prohibited. See [`LICENSE`](LICENSE) for complete terms.
