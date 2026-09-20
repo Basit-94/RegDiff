@@ -103,6 +103,7 @@ Run the complete multi-tier enterprise stack (Postgres + pgvector, Redis, FastAP
 docker compose up --build
 ```
 
+
 ---
 
 ## 🧪 Testing Suite
