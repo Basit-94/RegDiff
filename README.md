@@ -1,4 +1,4 @@
-# § RegDiff — Autonomous Statutory Intelligence & Compliance Enclave
+# Â§ RegDiff â€” Autonomous Statutory Intelligence & Compliance Enclave
 
 [![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Policy_Gate_Active-emerald?style=flat-square&logo=githubactions)](https://github.com/Basit-94/RegDiff)
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](https://python.org)
@@ -11,21 +11,21 @@
 
 ---
 
-## 🏛️ Core Capabilities
+## ðŸ›ï¸ Core Capabilities
 
-* 🔍 **Multi-Jurisdiction Statutory Matrix**: Built-in deterministic AST compliance engines covering **CFPB 1033**, **EU GDPR (Art. 33 & 17)**, **HIPAA § 164.312**, **CCPA / CPRA § 1798.130**, **NYDFS 23 NYCRR 500**, and **EU AI Act Article 14**.
-* ⚡ **AST Policy-as-Code Compiler**: Custom rule engine allowing compliance and legal teams to author deterministic statutory rules with live test evaluations.
-* 📝 **Autonomous Remediation & Track Changes**: Generates formal Opposing Counsel Notice letters and exports `.docx` redline packages with valid OpenXML `<w:del>` / `<w:ins>` revisions.
-* 🛡️ **Policy Gate CI/CD**: Automated GitHub Action / GitLab CI pipeline gate that evaluates code and documentation pull requests, blocking non-compliant changes before merge.
-* 🔗 **Enterprise Connectors**: Native bi-directional sync with **SharePoint**, **Google Drive**, **DocuSign / Ironclad CLM**, with automated triage ticket dispatch to **Jira** and **ServiceNow**.
-* 📋 **Continuous GRC Evidence Sync**: Real-time attestation mapping for **Vanta**, **Drata**, and **Secureframe** SOC 2 Type II and ISO 27001 controls.
-* 📑 **FRE 902(13) Immutable Ledger**: SHA-256 Merkle tree verification anchored to self-authenticating electronic record certificates for federal regulatory audits.
-* 📈 **InsurTech Underwriting Index**: Actuarial cyber risk score computation (`94/100 A+`) providing cyber insurance premium discount verifications.
-* 💻 **Microsoft Word 365 Add-in**: Live Office JS sidebar enclave enabling attorneys to audit clauses and insert redlines without leaving MS Word.
+* ðŸ” **Multi-Jurisdiction Statutory Matrix**: Built-in deterministic AST compliance engines covering **CFPB 1033**, **EU GDPR (Art. 33 & 17)**, **HIPAA Â§ 164.312**, **CCPA / CPRA Â§ 1798.130**, **NYDFS 23 NYCRR 500**, and **EU AI Act Article 14**.
+* âš¡ **AST Policy-as-Code Compiler**: Custom rule engine allowing compliance and legal teams to author deterministic statutory rules with live test evaluations.
+* ðŸ“ **Autonomous Remediation & Track Changes**: Generates formal Opposing Counsel Notice letters and exports `.docx` redline packages with valid OpenXML `<w:del>` / `<w:ins>` revisions.
+* ðŸ›¡ï¸ **Policy Gate CI/CD**: Automated GitHub Action / GitLab CI pipeline gate that evaluates code and documentation pull requests, blocking non-compliant changes before merge.
+* ðŸ”— **Enterprise Connectors**: Native bi-directional sync with **SharePoint**, **Google Drive**, **DocuSign / Ironclad CLM**, with automated triage ticket dispatch to **Jira** and **ServiceNow**.
+* ðŸ“‹ **Continuous GRC Evidence Sync**: Real-time attestation mapping for **Vanta**, **Drata**, and **Secureframe** SOC 2 Type II and ISO 27001 controls.
+* ðŸ“‘ **FRE 902(13) Immutable Ledger**: SHA-256 Merkle tree verification anchored to self-authenticating electronic record certificates for federal regulatory audits.
+* ðŸ“ˆ **InsurTech Underwriting Index**: Actuarial cyber risk score computation (`94/100 A+`) providing cyber insurance premium discount verifications.
+* ðŸ’» **Microsoft Word 365 Add-in**: Live Office JS sidebar enclave enabling attorneys to audit clauses and insert redlines without leaving MS Word.
 
 ---
 
-## 🏗️ Architecture
+## ðŸ—ï¸ Architecture
 
 ```mermaid
 flowchart TD
@@ -58,7 +58,7 @@ flowchart TD
 
 ---
 
-## 🚀 Quickstart
+## ðŸš€ Quickstart
 
 ### Prerequisites
 * **Python 3.11+**
@@ -95,7 +95,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## 🐳 Docker Deployment
+## ðŸ³ Docker Deployment
 
 Run the complete multi-tier enterprise stack (Postgres + pgvector, Redis, FastAPI backend, and Nginx React frontend) with a single command:
 
@@ -103,10 +103,9 @@ Run the complete multi-tier enterprise stack (Postgres + pgvector, Redis, FastAP
 docker compose up --build
 ```
 
-
 ---
 
-## 🧪 Testing Suite
+## ðŸ§ª Testing Suite
 
 RegDiff includes a comprehensive test suite with 100% pass rate:
 
@@ -117,6 +116,6 @@ pytest backend/tests
 
 ---
 
-## 📄 License & Intellectual Property
-Copyright © 2026 **Abdul Basit Siddiqui**. All Rights Reserved.  
+## ðŸ“„ License & Intellectual Property
+Copyright Â© 2026 **Abdul Basit Siddiqui**. All Rights Reserved.  
 This project is proprietary and confidential. Unauthorized copying, modification, redistribution, or commercial use without explicit permission is strictly prohibited. See [`LICENSE`](LICENSE) for complete terms.
