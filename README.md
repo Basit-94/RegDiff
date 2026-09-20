@@ -117,5 +117,5 @@ pytest backend/tests
 ---
 
 ## 📄 License & Intellectual Property
-Copyright © 2026 **Abdul Basit**. All Rights Reserved.  
+Copyright © 2026 **Abdul Basit Siddiqui**. All Rights Reserved.  
 This project is proprietary and confidential. Unauthorized copying, modification, redistribution, or commercial use without explicit permission is strictly prohibited. See [`LICENSE`](LICENSE) for complete terms.
