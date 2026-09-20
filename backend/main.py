@@ -1,9 +1,14 @@
+import sys
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env.local and .env from project root
+# Ensure root and backend directory are in sys.path for cloud hosts
 _root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_root))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 load_dotenv(_root / ".env.local")
 load_dotenv(_root / ".env")
 load_dotenv(Path(__file__).resolve().parent / ".env.local")
