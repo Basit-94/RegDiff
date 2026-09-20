@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+*.pyc
+.env.local
+node_modules
+dist
+.playwright-mcp
+tests/__pycache__

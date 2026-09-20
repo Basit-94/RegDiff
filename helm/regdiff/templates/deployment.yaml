@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: regdiff-backend
+  labels:
+    app.kubernetes.io/name: regdiff-backend
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: regdiff-backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: regdiff-backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.image.backend.repository }}:{{ .Values.image.backend.tag }}"
+          imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.backendPort }}
+          env:
+            - name: PROJECT_NAME
+              value: "RegDiff Enterprise Enclave"
+            - name: API_V1_PREFIX
+              value: "/api/v1"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.service.backendPort }}
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: regdiff-frontend
+  labels:
+    app.kubernetes.io/name: regdiff-frontend
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: regdiff-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: regdiff-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: "{{ .Values.image.frontend.repository }}:{{ .Values.image.frontend.tag }}"
+          imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.frontendPort }}

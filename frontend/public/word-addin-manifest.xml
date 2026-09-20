@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OfficeApp 
+          xmlns="http://schemas.microsoft.com/office/appforoffice/1.1" 
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+          xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0" 
+          xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+          xsi:type="TaskPaneApp">
+
+  <Id>d250811e-82cf-4b95-a226-62142278453e</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>RegDiff Inc.</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="RegDiff Continuous Legal Compliance Inspector" />
+  <Description DefaultValue="Live continuous statutory compliance auditing, AST clause detection, and Track Changes Word redline generation inside Microsoft Word." />
+  <IconUrl DefaultValue="https://localhost:5173/assets/vite.svg" />
+  <HighResolutionIconUrl DefaultValue="https://localhost:5173/assets/hero.png" />
+  <SupportUrl DefaultValue="https://regdiff.compliance/support" />
+  <AppDomains>
+    <AppDomain>http://localhost:5173</AppDomain>
+    <AppDomain>http://127.0.0.1:8000</AppDomain>
+  </AppDomains>
+
+  <Hosts>
+    <Host Name="Document" />
+  </Hosts>
+
+  <DefaultSettings>
+    <SourceLocation DefaultValue="http://localhost:5173/?mode=word_addin" />
+  </DefaultSettings>
+
+  <Permissions>ReadWriteDocument</Permissions>
+
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Document">
+        <DesktopFormFactor>
+          <GetStarted>
+            <Title resid="GetStarted.Title"/>
+            <Description resid="GetStarted.Description"/>
+            <LearnMoreUrl resid="GetStarted.LearnMoreUrl"/>
+          </GetStarted>
+          <FunctionFile resid="Commands.Url" />
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <CustomTab id="RegDiffTab">
+              <Group id="RegDiffGroup">
+                <Label resid="GroupLabel" />
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16" />
+                  <bt:Image size="32" resid="Icon.32x32" />
+                  <bt:Image size="80" resid="Icon.80x80" />
+                </Icon>
+                <Control xsi:type="Button" id="TaskpaneButton">
+                  <Label resid="TaskpaneButton.Label" />
+                  <Supertip>
+                    <Title resid="TaskpaneButton.Label" />
+                    <Description resid="TaskpaneButton.Tooltip" />
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16" />
+                    <bt:Image size="32" resid="Icon.32x32" />
+                    <bt:Image size="80" resid="Icon.80x80" />
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>RegDiffSidebar</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url" />
+                  </Action>
+                </Control>
+              </Group>
+              <Label resid="TabLabel" />
+            </CustomTab>
+          </ExtensionPoint>
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://localhost:5173/assets/vite.svg" />
+        <bt:Image id="Icon.32x32" DefaultValue="https://localhost:5173/assets/vite.svg" />
+        <bt:Image id="Icon.80x80" DefaultValue="https://localhost:5173/assets/vite.svg" />
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Commands.Url" DefaultValue="http://localhost:5173/commands.html" />
+        <bt:Url id="Taskpane.Url" DefaultValue="http://localhost:5173/?mode=word_addin" />
+        <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://regdiff.compliance" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GetStarted.Title" DefaultValue="Get started with RegDiff" />
+        <bt:String id="GroupLabel" DefaultValue="Continuous Compliance" />
+        <bt:String id="TabLabel" DefaultValue="RegDiff Inspector" />
+        <bt:String id="TaskpaneButton.Label" DefaultValue="Inspect &amp; Redline" />
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="GetStarted.Description" DefaultValue="Audits contracts and SOPs in real time against CFPB 1033, EU AI Act, NYDFS 500, and HIPAA rules." />
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Opens the RegDiff Statutory Inspector task pane to scan clauses and insert Track Changes redlines." />
+      </bt:LongStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

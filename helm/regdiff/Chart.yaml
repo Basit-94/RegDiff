@@ -1,0 +1,9 @@
+apiVersion: v2
+name: regdiff
+description: Helm chart for RegDiff Continuous Legal Compliance Enclave
+type: application
+version: 1.0.0
+appVersion: "2026.3.0"
+maintainers:
+  - name: RegDiff SecOps
+    email: secops@regdiff.compliance

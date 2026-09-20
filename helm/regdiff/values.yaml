@@ -1,0 +1,43 @@
+replicaCount: 3
+
+image:
+  backend:
+    repository: regdiff/backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  frontend:
+    repository: regdiff/frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  backendPort: 8000
+  frontendPort: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+    - host: compliance.regdiff.internal
+      paths:
+        - path: /
+          pathType: Prefix
+          backend: frontend
+        - path: /api
+          pathType: Prefix
+          backend: backend
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80

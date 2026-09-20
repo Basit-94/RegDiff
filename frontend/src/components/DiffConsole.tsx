@@ -1,0 +1,1 @@
+export const DiffConsole = () => null;

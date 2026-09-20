@@ -1,0 +1,33 @@
+name: RegDiff Continuous Legal Compliance Gate
+
+on:
+  pull_request:
+    paths:
+      - 'policies/**'
+      - 'contracts/**'
+      - 'config/retention.json'
+      - 'TERMS.md'
+      - 'PRIVACY.md'
+
+jobs:
+  statutory-audit:
+    name: Audit Regulatory Ceilings (CFPB 1033 & EU AI Act)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run RegDiff Statutory Compliance Gate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGDIFF_API_URL: ${{ secrets.REGDIFF_API_URL || 'https://api.regdiff.compliance' }}
+        run: |
+          python scripts/regdiff-cli.py \
+            --file policies/DATA_RETENTION.md \
+            --framework cfpb \
+            --endpoint "${REGDIFF_API_URL}/api/v1/policies/cicd_check"
