@@ -1,6 +1,9 @@
-# Â§ RegDiff â€” Autonomous Statutory Intelligence & Compliance Enclave
+# § RegDiff — Autonomous Statutory Intelligence & Compliance Enclave
 
-[![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-Policy_Gate_Active-emerald?style=flat-square&logo=githubactions)](https://github.com/Basit-94/RegDiff)
+[![Live Web Application](https://img.shields.io/badge/Live_App-regdiff--app.vercel.app-coral?style=for-the-badge&logo=vercel&logoColor=white)](https://regdiff-app.vercel.app)
+[![API Backend](https://img.shields.io/badge/Live_API-Render_Active-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://regdiff-backend.onrender.com/health)
+[![API Documentation](https://img.shields.io/badge/Swagger_Docs-Explore_API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://regdiff-backend.onrender.com/docs)
+
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react)](https://reactjs.org)
@@ -11,21 +14,29 @@
 
 ---
 
-## ðŸ›ï¸ Core Capabilities
+### 🌐 Live Production Deployments
 
-* ðŸ” **Multi-Jurisdiction Statutory Matrix**: Built-in deterministic AST compliance engines covering **CFPB 1033**, **EU GDPR (Art. 33 & 17)**, **HIPAA Â§ 164.312**, **CCPA / CPRA Â§ 1798.130**, **NYDFS 23 NYCRR 500**, and **EU AI Act Article 14**.
-* âš¡ **AST Policy-as-Code Compiler**: Custom rule engine allowing compliance and legal teams to author deterministic statutory rules with live test evaluations.
-* ðŸ“ **Autonomous Remediation & Track Changes**: Generates formal Opposing Counsel Notice letters and exports `.docx` redline packages with valid OpenXML `<w:del>` / `<w:ins>` revisions.
-* ðŸ›¡ï¸ **Policy Gate CI/CD**: Automated GitHub Action / GitLab CI pipeline gate that evaluates code and documentation pull requests, blocking non-compliant changes before merge.
-* ðŸ”— **Enterprise Connectors**: Native bi-directional sync with **SharePoint**, **Google Drive**, **DocuSign / Ironclad CLM**, with automated triage ticket dispatch to **Jira** and **ServiceNow**.
-* ðŸ“‹ **Continuous GRC Evidence Sync**: Real-time attestation mapping for **Vanta**, **Drata**, and **Secureframe** SOC 2 Type II and ISO 27001 controls.
-* ðŸ“‘ **FRE 902(13) Immutable Ledger**: SHA-256 Merkle tree verification anchored to self-authenticating electronic record certificates for federal regulatory audits.
-* ðŸ“ˆ **InsurTech Underwriting Index**: Actuarial cyber risk score computation (`94/100 A+`) providing cyber insurance premium discount verifications.
-* ðŸ’» **Microsoft Word 365 Add-in**: Live Office JS sidebar enclave enabling attorneys to audit clauses and insert redlines without leaving MS Word.
+* 🌟 **Frontend Web Application**: [https://regdiff-app.vercel.app](https://regdiff-app.vercel.app)
+* ⚡ **FastAPI Backend Server**: [https://regdiff-backend.onrender.com](https://regdiff-backend.onrender.com)
+* 📖 **Interactive Swagger Docs**: [https://regdiff-backend.onrender.com/docs](https://regdiff-backend.onrender.com/docs)
 
 ---
 
-## ðŸ—ï¸ Architecture
+## 🏛️ Core Capabilities
+
+* 🔍 **Multi-Jurisdiction Statutory Matrix**: Built-in deterministic AST compliance engines covering **CFPB 1033**, **EU GDPR (Art. 33 & 17)**, **HIPAA § 164.312**, **CCPA / CPRA § 1798.130**, **NYDFS 23 NYCRR 500**, and **EU AI Act Article 14**.
+* ⚡ **AST Policy-as-Code Compiler**: Custom rule engine allowing compliance and legal teams to author deterministic statutory rules with live test evaluations.
+* 📝 **Autonomous Remediation & Track Changes**: Generates formal Opposing Counsel Notice letters and exports `.docx` redline packages with valid OpenXML `<w:del>` / `<w:ins>` revisions.
+* 🛡️ **Policy Gate CI/CD**: Automated GitHub Action / GitLab CI pipeline gate that evaluates code and documentation pull requests, blocking non-compliant changes before merge.
+* 🔗 **Enterprise Connectors**: Native bi-directional sync with **SharePoint**, **Google Drive**, **DocuSign / Ironclad CLM**, with automated triage ticket dispatch to **Jira** and **ServiceNow**.
+* 📋 **Continuous GRC Evidence Sync**: Real-time attestation mapping for **Vanta**, **Drata**, and **Secureframe** SOC 2 Type II and ISO 27001 controls.
+* 📑 **FRE 902(13) Immutable Ledger**: SHA-256 Merkle tree verification anchored to self-authenticating electronic record certificates for federal regulatory audits.
+* 📈 **InsurTech Underwriting Index**: Actuarial cyber risk score computation (`94/100 A+`) providing cyber insurance premium discount verifications.
+* 💻 **Microsoft Word 365 Add-in**: Live Office JS sidebar enclave enabling attorneys to audit clauses and insert redlines without leaving MS Word.
+
+---
+
+## 🏗️ Architecture
 
 ```mermaid
 flowchart TD
@@ -58,7 +69,7 @@ flowchart TD
 
 ---
 
-## ðŸš€ Quickstart
+## 🚀 Quickstart
 
 ### Prerequisites
 * **Python 3.11+**
@@ -95,7 +106,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## ðŸ³ Docker Deployment
+## 🐳 Docker Deployment
 
 Run the complete multi-tier enterprise stack (Postgres + pgvector, Redis, FastAPI backend, and Nginx React frontend) with a single command:
 
@@ -105,7 +116,7 @@ docker compose up --build
 
 ---
 
-## ðŸ§ª Testing Suite
+## 🧪 Testing Suite
 
 RegDiff includes a comprehensive test suite with 100% pass rate:
 
@@ -116,6 +127,6 @@ pytest backend/tests
 
 ---
 
-## ðŸ“„ License & Intellectual Property
-Copyright Â© 2026 **Abdul Basit Siddiqui**. All Rights Reserved.  
+## 📄 License & Intellectual Property
+Copyright © 2026 **Abdul Basit Siddiqui**. All Rights Reserved.  
 This project is proprietary and confidential. Unauthorized copying, modification, redistribution, or commercial use without explicit permission is strictly prohibited. See [`LICENSE`](LICENSE) for complete terms.
