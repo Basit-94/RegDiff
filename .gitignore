@@ -64,3 +64,5 @@ index.html
 Thumbs.db
 *.bak
 *.swp
+
+.vercel
