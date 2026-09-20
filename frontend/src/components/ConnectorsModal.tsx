@@ -20,7 +20,6 @@ export const ConnectorsModal: React.FC<ConnectorsModalProps> = ({
   onSyncComplete,
 }) => {
   const [connectors, setConnectors] = useState<EnterpriseConnector[]>([]);
-  const [loading, setLoading] = useState(false);
   const [syncingId, setSyncingId] = useState<string | null>(null);
   const [syncResult, setSyncResult] = useState<ConnectorSyncResult | null>(null);
   
@@ -51,14 +50,11 @@ export const ConnectorsModal: React.FC<ConnectorsModalProps> = ({
   }, [isOpen]);
 
   const load = async () => {
-    setLoading(true);
     try {
       const list = await fetchEnterpriseConnectors();
       setConnectors(list);
     } catch {
       // Fallback
-    } finally {
-      setLoading(false);
     }
   };
 

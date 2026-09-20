@@ -18,7 +18,6 @@ export const VerifyPage: React.FC<VerifyPageProps> = ({ onGoHome, onGoToIngest }
   const [verifyError, setVerifyError] = useState<string | null>(null);
 
   const [insurtechData, setInsurtechData] = useState<InsurtechScoreResponse | null>(null);
-  const [insurtechLoading, setInsurtechLoading] = useState(false);
 
   useEffect(() => {
     loadInsurtech();
@@ -26,14 +25,11 @@ export const VerifyPage: React.FC<VerifyPageProps> = ({ onGoHome, onGoToIngest }
   }, []);
 
   const loadInsurtech = async () => {
-    setInsurtechLoading(true);
     try {
       const data = await fetchInsurtechScore();
       setInsurtechData(data);
     } catch {
       // Fallback defaults
-    } finally {
-      setInsurtechLoading(false);
     }
   };
 
