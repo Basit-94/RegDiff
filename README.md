@@ -1,24 +1,17 @@
 # § RegDiff — Autonomous Statutory Intelligence & Compliance Enclave
 
-[![Live Web Application](https://img.shields.io/badge/Live_App-regdiff--app.vercel.app-coral?style=for-the-badge&logo=vercel&logoColor=white)](https://regdiff-app.vercel.app)
-[![API Backend](https://img.shields.io/badge/Live_API-Render_Active-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://regdiff-backend.onrender.com/health)
-[![API Documentation](https://img.shields.io/badge/Swagger_Docs-Explore_API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://regdiff-backend.onrender.com/docs)
-
-[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square&logo=python)](https://python.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-18+-61DAFB?style=flat-square&logo=react)](https://reactjs.org)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC?style=flat-square&logo=tailwindcss)](https://tailwindcss.com)
-[![License: Proprietary](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg?style=flat-square)](LICENSE)
+[![Live Web Application](https://img.shields.io/badge/Live_Application-regdiff--app.vercel.app-coral?style=for-the-badge&logo=vercel&logoColor=white)](https://regdiff-app.vercel.app)
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue?style=for-the-badge&logo=python)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-18+-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v4-38B2AC?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+[![License: Proprietary](https://img.shields.io/badge/License-All_Rights_Reserved-red.svg?style=for-the-badge)](LICENSE)
 
 > **When laws shift, your policies stay compliant.** RegDiff is an automated compliance intelligence platform that continuously ingests corporate agreements and handbooks, detects statutory breaches using deterministic AST engines, generates ready-to-merge Track Changes redlines, and anchors immutable attestation receipts to a cryptographic Merkle ledger.
 
 ---
 
-### 🌐 Live Production Deployments
-
-* 🌟 **Frontend Web Application**: [https://regdiff-app.vercel.app](https://regdiff-app.vercel.app)
-* ⚡ **FastAPI Backend Server**: [https://regdiff-backend.onrender.com](https://regdiff-backend.onrender.com)
-* 📖 **Interactive Swagger Docs**: [https://regdiff-backend.onrender.com/docs](https://regdiff-backend.onrender.com/docs)
+### 🌐 Live Web Application: [https://regdiff-app.vercel.app](https://regdiff-app.vercel.app)
 
 ---
 
