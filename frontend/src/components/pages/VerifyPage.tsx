@@ -9,9 +9,14 @@ import {
 interface VerifyPageProps {
   onGoHome?: () => void;
   onGoToIngest?: () => void;
+  onGoToProof?: () => void;
 }
 
-export const VerifyPage: React.FC<VerifyPageProps> = ({ onGoHome, onGoToIngest }) => {
+export const VerifyPage: React.FC<VerifyPageProps> = ({ 
+  onGoHome, 
+  onGoToIngest,
+  onGoToProof 
+}) => {
   const [queryInput, setQueryInput] = useState('CERT-REGDIFF-000022');
   const [verifying, setVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState<PublicVerificationResponse | null>(null);
@@ -255,21 +260,33 @@ export const VerifyPage: React.FC<VerifyPageProps> = ({ onGoHome, onGoToIngest }
       </div>
 
       {/* Navigation shortcuts */}
-      <div className="flex items-center justify-center gap-4 font-mono text-xs">
-        {onGoHome && (
-          <button
-            onClick={onGoHome}
-            className="px-4 py-2 rounded-xl border border-coral/30 hover:bg-coral/10 text-forest-ink dark:text-white cursor-pointer transition-colors"
-          >
-            &larr; Back to Home
-          </button>
-        )}
+      <div className="flex flex-wrap items-center justify-between gap-4 font-mono text-xs pt-4 border-t border-coral/15">
+        <div className="flex items-center gap-3">
+          {onGoToProof && (
+            <button
+              onClick={onGoToProof}
+              className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer transition-colors"
+            >
+              &larr; Back to Step 4: Proof &amp; Certificate
+            </button>
+          )}
+          {onGoHome && (
+            <button
+              onClick={onGoHome}
+              className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer transition-colors"
+            >
+              Dashboard
+            </button>
+          )}
+        </div>
+
         {onGoToIngest && (
           <button
             onClick={onGoToIngest}
-            className="px-4 py-2 rounded-xl bg-coral text-white font-bold hover:bg-coral-vivid cursor-pointer shadow-xs transition-colors"
+            className="btn-iridescent px-6 py-2.5 rounded-full text-white font-bold shadow-neon-coral flex items-center gap-2 cursor-pointer transition-all"
           >
-            Launch Ingest &amp; Redline &rarr;
+            <span>Restart Compliance Journey (Step 1) &rarr;</span>
+            <span className="material-symbols-outlined text-sm">replay</span>
           </button>
         )}
       </div>

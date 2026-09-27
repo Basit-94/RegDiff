@@ -5,6 +5,7 @@ import {
   downloadVaultDocx, 
   loadSampleSuite, 
   clearVaultPolicies, 
+  batchRemediateVaultPolicies,
   type Policy 
 } from '../../lib/api';
 import { ConnectorsModal } from '../ConnectorsModal';
@@ -15,6 +16,8 @@ interface VaultPageProps {
   onGoToSentinel: () => void;
   statutoryAlert?: { active: boolean; statute: string; description: string } | null;
   onDismissAlert?: () => void;
+  openBatchDiff?: boolean;
+  onResetOpenBatchDiff?: () => void;
 }
 
 // Department / Scope definition for "What applies to me?"
@@ -43,6 +46,8 @@ export const VaultPage: React.FC<VaultPageProps> = ({
   onGoToSentinel,
   statutoryAlert,
   onDismissAlert,
+  openBatchDiff,
+  onResetOpenBatchDiff,
 }) => {
   const [policies, setPolicies] = useState<Policy[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +56,19 @@ export const VaultPage: React.FC<VaultPageProps> = ({
   const [downloadingDocxId, setDownloadingDocxId] = useState<string | null>(null);
   const [loadingSuite, setLoadingSuite] = useState(false);
   const [clearingVault, setClearingVault] = useState(false);
+
+  // Batch Diff & Multi-Policy Remediation State
+  const [isBatchDiffModalOpen, setIsBatchDiffModalOpen] = useState(false);
+  const [batchRemediating, setBatchRemediating] = useState(false);
+  const [batchSuccessMsg, setBatchSuccessMsg] = useState<string | null>(null);
+
+  // Auto-open modal when requested via navigation prop
+  useEffect(() => {
+    if (openBatchDiff) {
+      setIsBatchDiffModalOpen(true);
+      if (onResetOpenBatchDiff) onResetOpenBatchDiff();
+    }
+  }, [openBatchDiff, onResetOpenBatchDiff]);
 
   // Advanced Navigation & Customization State
   const [searchQuery, setSearchQuery] = useState('');
@@ -243,6 +261,26 @@ export const VaultPage: React.FC<VaultPageProps> = ({
   const compliantCount = policies.filter(p => p.current_status === 'COMPLIANT').length;
   const breachCount = totalCount - compliantCount;
   const healthPercent = totalCount > 0 ? Math.round((compliantCount / totalCount) * 100) : 100;
+  const breachedPolicies = useMemo(() => policies.filter(p => p.current_status !== 'COMPLIANT'), [policies]);
+
+  const handleBatchRemediateAll = async () => {
+    setBatchRemediating(true);
+    setError(null);
+    try {
+      const res = await batchRemediateVaultPolicies();
+      setPolicies(prev => prev.map(p => ({ ...p, current_status: 'COMPLIANT' })));
+      await loadVault();
+      setIsBatchDiffModalOpen(false);
+      if (onDismissAlert) onDismissAlert();
+      setBatchSuccessMsg(`✅ All ${res.remediated_count} breached documents in your Vault have been patched to 100% statutory compliance and sealed into Merkle Ledger Block #${res.audit_block_index}!`);
+      setTimeout(() => setBatchSuccessMsg(null), 8000);
+    } catch (err: any) {
+      console.error('Batch remediation error:', err);
+      setError(err.message || 'Batch remediation failed');
+    } finally {
+      setBatchRemediating(false);
+    }
+  };
 
   // Active filters count
   const hasActiveFilters = searchQuery.trim() !== '' || selectedStatute !== 'ALL' || selectedDept !== 'ALL' || statusFilter !== 'ALL';
@@ -250,6 +288,22 @@ export const VaultPage: React.FC<VaultPageProps> = ({
   return (
     <div className="max-w-5xl mx-auto px-4 pt-4 pb-24 text-left space-y-6">
       
+      {/* Batch Remediation Success Toast */}
+      {batchSuccessMsg && (
+        <div className="p-4 rounded-2xl bg-emerald-500/15 border-2 border-emerald-500/40 text-emerald-800 dark:text-emerald-300 font-mono text-xs flex items-center justify-between gap-3 animate-fade-in shadow-clay">
+          <div className="flex items-center gap-2.5">
+            <span className="material-symbols-outlined text-emerald-600 text-xl">verified</span>
+            <span className="font-bold">{batchSuccessMsg}</span>
+          </div>
+          <button 
+            onClick={() => setBatchSuccessMsg(null)}
+            className="p-1 hover:text-emerald-950 dark:hover:text-white cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Reactive Statutory Amendment Alert Banner */}
       {statutoryAlert && statutoryAlert.active && (
         <div className="p-4 rounded-2xl bg-red-500/10 border-2 border-red-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in font-mono text-xs shadow-clay">
@@ -262,15 +316,25 @@ export const VaultPage: React.FC<VaultPageProps> = ({
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => {
-                const target = policies.find(p => p.current_status !== 'COMPLIANT') || policies[0];
-                if (target) onViewPolicy(target);
-              }}
-              className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold cursor-pointer transition-colors"
+              onClick={() => setIsBatchDiffModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold cursor-pointer transition-colors shadow-xs flex items-center gap-1.5"
+              title="Inspect side-by-side legal diffs for all breached policies"
             >
-              Review Diff &amp; Apply Patch &rarr;
+              <span className="material-symbols-outlined text-sm">difference</span>
+              <span>Review Diff &amp; Apply Patch &rarr;</span>
+            </button>
+            <button
+              onClick={handleBatchRemediateAll}
+              disabled={batchRemediating}
+              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-colors shadow-xs flex items-center gap-1"
+              title="Apply statutory patch to all breached documents in Vault with 1 click"
+            >
+              <span className={`material-symbols-outlined text-sm ${batchRemediating ? 'animate-spin' : ''}`}>
+                {batchRemediating ? 'refresh' : 'bolt'}
+              </span>
+              <span>{batchRemediating ? 'Patching All...' : '1-Click Auto-Patch All'}</span>
             </button>
             {onDismissAlert && (
               <button
@@ -301,6 +365,17 @@ export const VaultPage: React.FC<VaultPageProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
+          {breachedPolicies.length > 0 && (
+            <button
+              onClick={() => setIsBatchDiffModalOpen(true)}
+              className="px-3.5 py-2 rounded-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-mono font-bold flex items-center gap-1.5 shadow-sm transition-all cursor-pointer animate-pulse"
+              title="Review diff and apply patch to all breached documents"
+            >
+              <span className="material-symbols-outlined text-sm">difference</span>
+              <span>Review Diff &amp; Patch All ({breachedPolicies.length})</span>
+            </button>
+          )}
+
           {policies.length > 0 && (
             <button
               onClick={handleClearVault}
@@ -873,12 +948,230 @@ export const VaultPage: React.FC<VaultPageProps> = ({
         )}
       </div>
 
+      {/* Next Step Workflow Banner: Step 2 -> Step 3 */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-coral/15 via-apricot-500/10 to-purple-500/15 border-2 border-coral/40 shadow-clay dark:shadow-dark-clay space-y-3 font-mono">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="text-[11px] uppercase tracking-wider text-coral font-bold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-coral animate-pulse"></span>
+              <span>Next Milestone: Step 3 of 5</span>
+            </div>
+            <h3 className="font-display font-bold text-lg text-forest-ink dark:text-white">
+              Regulatory Sentinel Radar &amp; Federal Register Surveillance
+            </h3>
+            <p className="text-xs text-forest-muted dark:text-slate-300">
+              Surveil live Federal Register rule amendments, test legislative shift simulations against your Vault policies, and trigger autonomous webhook alerts.
+            </p>
+          </div>
+
+          <button
+            onClick={onGoToSentinel}
+            className="btn-iridescent px-6 py-3.5 rounded-full text-white font-bold text-xs sm:text-sm shadow-neon-coral flex items-center gap-2 cursor-pointer self-start sm:self-auto shrink-0 transform hover:-translate-y-0.5 transition-all"
+          >
+            <span>Proceed to Sentinel Radar &rarr;</span>
+            <span className="material-symbols-outlined text-base">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
       {/* Enterprise Repositories Connector Modal */}
       <ConnectorsModal
         isOpen={isConnectorsModalOpen}
         onClose={() => setIsConnectorsModalOpen(false)}
         onSyncComplete={loadVault}
       />
+
+      {/* Batch Diff & Statutory Remediation Modal */}
+      {isBatchDiffModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div 
+            className="bg-white dark:bg-[#0e1422] border-2 border-coral/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden font-sans text-left"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b border-coral/20 bg-gradient-to-r from-coral/15 via-red-500/10 to-transparent flex items-start justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 font-mono text-xs font-bold text-coral uppercase tracking-wider">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
+                  <span>1-Click Multi-Policy Statutory Diff &amp; Remediation</span>
+                </div>
+                <h2 className="font-display text-2xl font-bold text-forest-ink dark:text-white">
+                  Review Policy Diffs &amp; Batch Apply Patches
+                </h2>
+                <p className="text-xs text-forest-muted dark:text-slate-400 font-mono">
+                  {breachedPolicies.length} breached documents identified. Review side-by-side AST deltas below and patch all documents simultaneously.
+                </p>
+              </div>
+
+              <button
+                onClick={() => setIsBatchDiffModalOpen(false)}
+                className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-forest-ink dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                title="Close"
+              >
+                <span className="material-symbols-outlined text-lg">close</span>
+              </button>
+            </div>
+
+            {/* Modal Scrollable Body */}
+            <div className="p-6 overflow-y-auto space-y-6 flex-1 text-xs font-mono">
+              
+              {/* Summary Metrics Bar */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-apricot-50 dark:bg-[#070b14] border border-coral/20">
+                <div>
+                  <div className="text-[10px] text-forest-muted dark:text-slate-400 uppercase font-bold">Affected Documents</div>
+                  <div className="text-lg font-bold text-red-600 dark:text-red-400 mt-0.5">{breachedPolicies.length} Policies</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-forest-muted dark:text-slate-400 uppercase font-bold">Statutory Frameworks</div>
+                  <div className="text-xs font-bold text-forest-ink dark:text-slate-200 mt-1">CFPB 1033 • EU AI Act • NYDFS 500</div>
+                </div>
+                <div>
+                  <div className="text-[10px] text-forest-muted dark:text-slate-400 uppercase font-bold">Evidentiary Standard</div>
+                  <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">FRE 902(13) Merkle Certified</div>
+                </div>
+              </div>
+
+              {error && (
+                <div className="p-3 rounded-xl bg-red-500/15 border border-red-500/40 text-red-700 dark:text-red-300 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-sm text-red-600">error</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
+              {/* List of Policies with Side-by-Side Diff */}
+              <div className="space-y-4">
+                <div className="font-bold text-forest-ink dark:text-slate-200 flex items-center justify-between">
+                  <span>Policy Breach Diffs ({breachedPolicies.length}):</span>
+                  <span className="text-[10px] text-forest-muted dark:text-slate-400 font-normal">
+                    Red = Breached Statutory Language • Green = Remediated Enforceable Language
+                  </span>
+                </div>
+
+                {breachedPolicies.length === 0 ? (
+                  <div className="p-8 text-center rounded-2xl border border-dashed border-emerald-500/30 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400">
+                    <span className="material-symbols-outlined text-3xl mb-1">check_circle</span>
+                    <div className="font-bold text-sm">All Vault Policies are 100% Compliant!</div>
+                    <div className="text-xs opacity-80 mt-1">No outstanding statutory breaches detected.</div>
+                  </div>
+                ) : (
+                  breachedPolicies.map((pol, idx) => {
+                    const clause = pol.clauses && pol.clauses.length > 0 ? pol.clauses[0] : null;
+                    const origText = clause ? clause.body_text : 'Original clause text';
+                    
+                    // Generate remediation preview
+                    let remediatedText = origText;
+                    const catLower = (pol.category || '').toLowerCase();
+                    const titleLower = pol.title.toLowerCase();
+                    const origLower = origText.toLowerCase();
+
+                    if (catLower.includes('ai') || titleLower.includes('ai') || origLower.includes('algorithm') || origLower.includes('override')) {
+                      remediatedText = 'The automated decision scoring pipeline implements an immediate synchronous human override kill-switch with an enforced latency ceiling of ≤420ms, and mandates quarterly independent algorithmic bias audits guaranteeing an Adverse Impact Ratio of ≥80.0% across all protected groups.';
+                    } else if (catLower.includes('cyber') || origLower.includes('500') || origLower.includes('audit log')) {
+                      remediatedText = 'System access and administrative activities shall be continuously streamed to an append-only SHA-256 cryptographic ledger with 3-year retention, tamper-evident hash chaining, and mandatory MFA token rotation.';
+                    } else if (catLower.includes('privacy') || origLower.includes('gdpr') || origLower.includes('supervisory')) {
+                      remediatedText = 'In the event of a personal data breach, the Data Protection Officer shall notify the competent supervisory authority without undue delay and, where feasible, not later than 72 hours after having become aware of it per GDPR Article 33.';
+                    } else if (catLower.includes('health') || origLower.includes('hipaa') || origLower.includes('ephi')) {
+                      remediatedText = 'All electronic protected health information (ePHI) at rest and in transit shall be encrypted utilizing FIPS 140-2 validated AES-256 bit encryption under 45 CFR § 164.312(a)(2)(iv), with individual breach notifications dispatched without unreasonable delay and in no case later than 60 calendar days.';
+                    } else if (catLower.includes('ccpa') || origLower.includes('cpra') || origLower.includes('california')) {
+                      remediatedText = 'Consumer requests to exercise CCPA/CPRA rights (access, deletion, correction) shall be fulfilled within forty-five (45) calendar days pursuant to Cal. Civ. Code § 1798.130, and opt-out requests processed within fifteen (15) business days.';
+                    } else {
+                      remediatedText = origText.replace(/ninety\s*\(\s*90\s*\)\s*calendar\s*days/gi, 'thirty (30) calendar days')
+                        .replace(/90\s*days/gi, '30 days')
+                        .replace(/90\s*calendar\s*days/gi, '30 calendar days');
+                      if (remediatedText === origText) {
+                        remediatedText = 'Customer telemetry and authorization tokens shall be expunged from all active stores within a mandatory ceiling of thirty (30) calendar days subsequent to user offboarding, with cryptographically verifiable audit logs.';
+                      }
+                    }
+
+                    return (
+                      <div key={pol.id || idx} className="p-4 rounded-2xl bg-white dark:bg-[#070b14] border border-coral/25 space-y-3">
+                        <div className="flex items-center justify-between border-b border-coral/15 pb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="w-5 h-5 rounded-md bg-red-500/20 text-red-600 flex items-center justify-center font-bold text-[10px]">
+                              {idx + 1}
+                            </span>
+                            <span className="font-bold text-forest-ink dark:text-white">{pol.title}</span>
+                            <span className="text-[10px] text-forest-muted dark:text-slate-400">({pol.organization})</span>
+                          </div>
+                          <span className="px-2 py-0.5 rounded bg-red-500/10 text-red-600 dark:text-red-400 font-bold text-[10px]">
+                            {clause?.section_label || 'Section 1.1'} • {pol.category}
+                          </span>
+                        </div>
+
+                        {/* Side-by-Side Diff Container */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {/* Original Breached Clause */}
+                          <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 space-y-1.5">
+                            <div className="flex items-center justify-between text-[10px] text-red-700 dark:text-red-300 font-bold uppercase">
+                              <span className="flex items-center gap-1">
+                                <span className="material-symbols-outlined text-xs">remove_circle</span>
+                                <span>Original (Breached)</span>
+                              </span>
+                              <span className="px-1.5 py-0.2 rounded bg-red-600 text-white text-[9px]">NON-COMPLIANT</span>
+                            </div>
+                            <div className="font-serif text-xs text-red-950 dark:text-red-200 leading-relaxed">
+                              “{origText}”
+                            </div>
+                          </div>
+
+                          {/* Remediated Compliant Clause */}
+                          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 space-y-1.5">
+                            <div className="flex items-center justify-between text-[10px] text-emerald-700 dark:text-emerald-300 font-bold uppercase">
+                              <span className="flex items-center gap-1">
+                                <span className="material-symbols-outlined text-xs">add_circle</span>
+                                <span>Statutory Remediation Patch</span>
+                              </span>
+                              <span className="px-1.5 py-0.2 rounded bg-emerald-600 text-white text-[9px]">ENFORCED</span>
+                            </div>
+                            <div className="font-serif text-xs text-emerald-950 dark:text-emerald-200 leading-relaxed">
+                              “{remediatedText}”
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="p-5 border-t border-coral/20 bg-apricot-50/70 dark:bg-[#070b14] flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono">
+              <div className="text-xs text-forest-muted dark:text-slate-400 flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-coral text-sm">lock</span>
+                <span>Applying patch creates an immutable SHA-256 Merkle Ledger block.</span>
+              </div>
+
+              <div className="flex items-center gap-2.5 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setIsBatchDiffModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+                >
+                  Dismiss
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleBatchRemediateAll}
+                  disabled={batchRemediating || breachedPolicies.length === 0}
+                  className="btn-iridescent px-6 py-2.5 rounded-xl text-white font-bold text-xs shadow-neon-coral flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <span className={`material-symbols-outlined text-sm ${batchRemediating ? 'animate-spin' : ''}`}>
+                    {batchRemediating ? 'refresh' : 'bolt'}
+                  </span>
+                  <span>
+                    {batchRemediating 
+                      ? 'Applying Patches & Sealing Ledger...' 
+                      : `Apply Patch to All ${breachedPolicies.length} Policies (1-Click) →`}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

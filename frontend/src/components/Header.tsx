@@ -14,6 +14,8 @@ interface HeaderProps {
   onOpenCustomRules?: () => void;
   onOpenWordAddin?: () => void;
   onOpenGRC?: () => void;
+  onOpenAISafety?: () => void;
+  onOpenConsensus?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,6 +30,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCustomRules,
   onOpenWordAddin,
   onOpenGRC,
+  onOpenAISafety,
+  onOpenConsensus,
 }) => {
   const [toolsOpen, setToolsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -243,6 +247,46 @@ export const Header: React.FC<HeaderProps> = ({
                           </div>
                           <p className="text-[10px] text-forest-muted dark:text-slate-400 leading-tight">
                             Block non-compliant pull requests in pipelines
+                          </p>
+                        </div>
+                      </button>
+                    )}
+
+                    {/* AI Safety Auditor */}
+                    {onOpenAISafety && (
+                      <button
+                        onClick={() => handleToolClick(onOpenAISafety)}
+                        className="w-full p-2 rounded-xl hover:bg-purple-50 dark:hover:bg-purple-950/40 transition-colors flex items-start gap-2.5 text-left cursor-pointer group"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                          <span className="material-symbols-outlined text-sm">smart_toy</span>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-forest-ink dark:text-white flex items-center gap-1.5">
+                            <span>AI Safety &amp; Bias Auditor</span>
+                          </div>
+                          <p className="text-[10px] text-forest-muted dark:text-slate-400 leading-tight">
+                            EU AI Act Art. 14 kill-switch &amp; NYC 144 bias audit
+                          </p>
+                        </div>
+                      </button>
+                    )}
+
+                    {/* Multi-Model Consensus */}
+                    {onOpenConsensus && (
+                      <button
+                        onClick={() => handleToolClick(onOpenConsensus)}
+                        className="w-full p-2 rounded-xl hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors flex items-start gap-2.5 text-left cursor-pointer group"
+                      >
+                        <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                          <span className="material-symbols-outlined text-sm">groups</span>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-forest-ink dark:text-white flex items-center gap-1.5">
+                            <span>AI Consensus Engine</span>
+                          </div>
+                          <p className="text-[10px] text-forest-muted dark:text-slate-400 leading-tight">
+                            Gemini + Claude + DeepSeek cross-validation
                           </p>
                         </div>
                       </button>

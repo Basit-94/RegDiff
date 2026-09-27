@@ -6,6 +6,64 @@ interface SignInPageProps {
   onBack: () => void;
 }
 
+interface DemoPersona {
+  name: string;
+  role: string;
+  email: string;
+  org: string;
+  icon: string;
+  badge: string;
+  focusArea: string;
+}
+
+const DEMO_PERSONAS: DemoPersona[] = [
+  {
+    name: 'Alex Vance',
+    role: 'LEAD COUNSEL',
+    email: 'alex.vance@regdiff.internal',
+    org: 'Apex Financial Technologies LLC',
+    icon: 'gavel',
+    badge: 'LEGAL COUNSEL',
+    focusArea: '⚖️ FinTech & CFPB 1033 SOPs',
+  },
+  {
+    name: 'Dr. Elena Rostova',
+    role: 'AI SAFETY AUDITOR',
+    email: 'elena.rostova@aisafety.org',
+    org: 'Center for Algorithmic Governance',
+    icon: 'smart_toy',
+    badge: 'AI GOVERNANCE',
+    focusArea: '🛡️ EU AI Act & Bias Audits',
+  },
+  {
+    name: 'Marcus Chen',
+    role: 'DEVOPS & POLICY LEAD',
+    email: 'marcus.chen@enterprise.io',
+    org: 'CloudScale Infrastructure Inc',
+    icon: 'terminal',
+    badge: 'CI/CD & DEVOPS',
+    focusArea: '⚡ Policy Gates & Git CI/CD',
+  },
+  {
+    name: 'Maya Lin',
+    role: 'CIVIC RIGHTS DIRECTOR',
+    email: 'justice@civictech.law',
+    org: 'Access to Justice Project',
+    icon: 'balance',
+    badge: 'CIVIC TECH',
+    focusArea: '📜 Plain-English Legal Rights',
+  },
+  {
+    name: 'Sarah Sterling',
+    role: 'CHIEF COMPLIANCE AUDITOR',
+    email: 'sarah.sterling@enterprise.org',
+    org: 'Enterprise Governance Board',
+    icon: 'verified',
+    badge: 'EXECUTIVE AUDITOR',
+    focusArea: '💡 Full Enclave Verification',
+  },
+];
+
 export const SignInPage: React.FC<SignInPageProps> = ({ onLoginSuccess, onBack }) => {
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
@@ -15,28 +73,14 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onLoginSuccess, onBack }
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleDemoLogin = async () => {
-    setLoading(true);
-    setErrorMsg(null);
-    try {
-      const user = await demoLogin();
-      onLoginSuccess({
-        name: user.full_name,
-        role: user.role,
-        email: user.email,
-        organization: user.organization,
-      });
-    } catch (e: any) {
-      // Fallback
-      onLoginSuccess({
-        name: 'Alex Vance',
-        role: 'LEAD COUNSEL',
-        email: 'alex.vance@regdiff.internal',
-        organization: 'Apex Financial Technologies LLC',
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleSelectPersona = (persona: DemoPersona) => {
+    onLoginSuccess({
+      name: persona.name,
+      role: persona.role,
+      email: persona.email,
+      organization: persona.org,
+    });
+    demoLogin().catch(() => {});
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,8 +89,8 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onLoginSuccess, onBack }
       setErrorMsg('Please enter your email address.');
       return;
     }
-    if (!password || password.length < 6) {
-      setErrorMsg('Password must be at least 6 characters.');
+    if (!password || password.length < 4) {
+      setErrorMsg('Password must be at least 4 characters.');
       return;
     }
 
@@ -89,7 +133,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onLoginSuccess, onBack }
   };
 
   return (
-    <div className="max-w-md mx-auto px-4 pt-10 pb-24 text-left space-y-6">
+    <div className="max-w-xl mx-auto px-4 pt-8 pb-24 text-left space-y-6">
       <button
         onClick={onBack}
         className="inline-flex items-center gap-1.5 text-xs font-mono text-forest-muted dark:text-slate-400 hover:text-coral transition-colors cursor-pointer"
@@ -98,50 +142,65 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onLoginSuccess, onBack }
         <span>Back to Home</span>
       </button>
 
-      <div className="rounded-3xl bg-white dark:bg-[#0e1422] border border-coral/30 dark:border-[#1e293d] p-7 sm:p-8 shadow-clay-lg dark:shadow-dark-clay space-y-6">
+      <div className="rounded-3xl bg-white dark:bg-[#0e1422] border border-coral/30 dark:border-[#1e293d] p-6 sm:p-8 shadow-clay-lg dark:shadow-dark-clay space-y-6">
         
         <div className="space-y-1.5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-coral/10 text-coral font-mono text-xs font-bold uppercase">
             <span className="w-2 h-2 rounded-full bg-coral animate-pulse"></span>
-            Compliance Vault Access
+            Compliance Enclave Access
           </div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold text-forest-ink dark:text-white">
-            {isRegister ? 'Create Vault Account' : 'Sign In to RegDiff'}
+            {isRegister ? 'Create Organization Vault' : 'Sign In to RegDiff'}
           </h2>
           <p className="text-xs text-forest-muted dark:text-slate-400">
             {isRegister
               ? 'Register to access your organization’s persistent Compliance Vault.'
-              : 'Sign in to review policies, inspect redlines, and attest audit certificates.'}
+              : 'Sign in or select a 1-Click Fast Persona to explore the continuous compliance enclave.'}
           </p>
         </div>
 
-        {/* 1-Click Demo Login Banner */}
-        <button
-          onClick={handleDemoLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-coral/15 via-coral/10 to-amber-500/10 border border-coral/40 hover:border-coral transition-all text-left group shadow-xs cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-coral/20 border border-coral/40 flex items-center justify-center text-coral group-hover:scale-105 transition-transform">
-              <span className="material-symbols-outlined text-xl">bolt</span>
-            </div>
-            <div>
-              <div className="text-xs font-mono font-bold text-forest-ink dark:text-white group-hover:text-coral transition-colors flex items-center gap-2">
-                1-Click Demo Login (Lead Counsel)
-                <span className="px-1.5 py-0.2 text-[9px] bg-coral text-white font-mono rounded font-bold">COUNSEL</span>
-              </div>
-              <div className="text-xs text-forest-muted dark:text-slate-400">Alex Vance • Lead Counsel (Demo Verified)</div>
-            </div>
+        {/* 1-Click Demo Personas Selector */}
+        <div className="space-y-2.5">
+          <div className="flex items-center justify-between text-[11px] font-mono font-bold text-coral uppercase tracking-wider">
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-sm">bolt</span>
+              <span>1-Click Fast Track Personas</span>
+            </span>
+            <span className="text-[9px] text-forest-muted dark:text-slate-400 lowercase font-normal">0s latency</span>
           </div>
-          <span className="material-symbols-outlined text-coral group-hover:translate-x-1 transition-transform">
-            arrow_forward
-          </span>
-        </button>
 
-        <div className="relative flex items-center justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {DEMO_PERSONAS.map((p, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => handleSelectPersona(p)}
+                disabled={loading}
+                className="p-3 rounded-2xl bg-gradient-to-r from-coral/10 via-amber-500/5 to-transparent border border-coral/30 hover:border-coral hover:bg-coral/15 transition-all text-left group shadow-xs cursor-pointer flex items-center justify-between gap-2"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-coral/20 border border-coral/30 flex items-center justify-center text-coral group-hover:scale-105 transition-transform flex-shrink-0">
+                    <span className="material-symbols-outlined text-base">{p.icon}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-mono font-bold text-forest-ink dark:text-white group-hover:text-coral transition-colors truncate">
+                      {p.name}
+                    </div>
+                    <div className="text-[10px] text-forest-muted dark:text-slate-400 truncate">{p.focusArea}</div>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-coral text-sm group-hover:translate-x-0.5 transition-transform flex-shrink-0">
+                  arrow_forward
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative flex items-center justify-center pt-2">
           <div className="border-t border-coral/15 dark:border-slate-800 w-full"></div>
-          <span className="bg-white dark:bg-[#0e1422] px-3 text-[11px] font-mono text-forest-muted dark:text-slate-400">
-            OR {isRegister ? 'REGISTER NEW USER' : 'SIGN IN WITH CREDENTIALS'}
+          <span className="bg-white dark:bg-[#0e1422] px-3 text-[11px] font-mono text-forest-muted dark:text-slate-400 whitespace-nowrap">
+            OR {isRegister ? 'REGISTER CUSTOM ACCOUNT' : 'ENTER CREDENTIALS'}
           </span>
         </div>
 
@@ -221,7 +280,7 @@ export const SignInPage: React.FC<SignInPageProps> = ({ onLoginSuccess, onBack }
             <span className={`material-symbols-outlined text-sm ${loading ? 'animate-spin' : ''}`}>
               {loading ? 'sync' : (isRegister ? 'person_add' : 'login')}
             </span>
-            <span>{loading ? 'Authenticating...' : (isRegister ? 'Register Account' : 'Sign In to Vault')}</span>
+            <span>{loading ? 'Authenticating...' : (isRegister ? 'Register Account' : 'Sign In to Enclave')}</span>
           </button>
         </form>
 

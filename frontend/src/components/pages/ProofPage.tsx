@@ -6,6 +6,9 @@ import type { AuditBlock } from '../../lib/api';
 interface ProofPageProps {
   onNewScan: () => void;
   onGoHome: () => void;
+  onGoToInsurtech?: () => void;
+  onGoToVault?: () => void;
+  onGoToSentinel?: () => void;
   initialBlockHeight?: number;
   organization?: string;
   docTitle?: string;
@@ -15,6 +18,9 @@ interface ProofPageProps {
 export const ProofPage: React.FC<ProofPageProps> = ({
   onNewScan,
   onGoHome,
+  onGoToInsurtech,
+  onGoToVault,
+  onGoToSentinel,
   initialBlockHeight = 26,
   organization = 'Apex Financial Technologies LLC',
   docTitle = 'SOP: Consumer Data Governance (Section 3.4)',
@@ -392,22 +398,79 @@ jobs:
         </p>
       </div>
 
-      {/* Navigation Footer */}
-      <div className="flex items-center justify-between pt-2 border-t border-coral/15 font-mono text-xs print:hidden">
-        <button
-          onClick={onGoHome}
-          className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer"
-        >
-          ← Return to Dashboard
-        </button>
+      {/* Next Step Workflow Banner: Step 4 -> Step 5 */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-coral/15 border-2 border-emerald-500/40 shadow-clay dark:shadow-dark-clay space-y-3 font-mono print:hidden">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="text-[11px] uppercase tracking-wider text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>Next Milestone: Step 5 of 5</span>
+            </div>
+            <h3 className="font-display font-bold text-lg text-forest-ink dark:text-white">
+              InsurTech &amp; Cyber Risk Underwriting Index
+            </h3>
+            <p className="text-xs text-forest-muted dark:text-slate-300">
+              Calculate dynamic insurance premium discounts (up to 28.5%), view demographic parity verification, and generate cyber underwriter attestation certificates.
+            </p>
+          </div>
 
-        <button
-          onClick={onNewScan}
-          className="btn-iridescent px-6 py-2.5 rounded-full text-white font-bold shadow-neon-coral flex items-center gap-2 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-sm">add</span>
-          <span>Start Another Scan</span>
-        </button>
+          {onGoToInsurtech && (
+            <button
+              onClick={onGoToInsurtech}
+              className="btn-iridescent px-6 py-3.5 rounded-full text-white font-bold text-xs sm:text-sm shadow-neon-coral flex items-center gap-2 cursor-pointer self-start sm:self-auto shrink-0 transform hover:-translate-y-0.5 transition-all"
+            >
+              <span>Proceed to InsurTech Scorecard &rarr;</span>
+              <span className="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Navigation Footer */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-coral/15 font-mono text-xs print:hidden">
+        <div className="flex items-center gap-3">
+          {onGoToSentinel && (
+            <button
+              onClick={onGoToSentinel}
+              className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer transition-colors"
+            >
+              &larr; Back to Step 3: Sentinel Radar
+            </button>
+          )}
+          {onGoToVault && !onGoToSentinel && (
+            <button
+              onClick={onGoToVault}
+              className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer transition-colors"
+            >
+              &larr; Back to Step 2: Policy Vault
+            </button>
+          )}
+          <button
+            onClick={onGoHome}
+            className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer transition-colors"
+          >
+            Dashboard
+          </button>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onNewScan}
+            className="px-5 py-2.5 rounded-full bg-white dark:bg-slate-800 hover:bg-apricot-50 dark:hover:bg-slate-700 border border-coral/30 text-forest-ink dark:text-slate-200 font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">add</span>
+            <span>Start New Ingestion</span>
+          </button>
+
+          {onGoToInsurtech && (
+            <button
+              onClick={onGoToInsurtech}
+              className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+            >
+              <span>5. InsurTech Portal &rarr;</span>
+            </button>
+          )}
+        </div>
       </div>
 
     </div>

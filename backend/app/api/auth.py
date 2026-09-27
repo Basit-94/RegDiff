@@ -61,7 +61,31 @@ async def ensure_seed_users(db: AsyncSession):
             role="CHIEF AUDITOR",
             organization="LexHack 2026 Grand Jury"
         )
-        db.add_all([alex, judge])
+        elena = User(
+            id=uuid.uuid4(),
+            email="elena.rostova@aisafety.org",
+            hashed_password=hash_password("safety2026"),
+            full_name="Dr. Elena Rostova",
+            role="AI SAFETY AUDITOR",
+            organization="Center for Algorithmic Governance"
+        )
+        marcus = User(
+            id=uuid.uuid4(),
+            email="marcus.chen@enterprise.io",
+            hashed_password=hash_password("devops2026"),
+            full_name="Marcus Chen",
+            role="DEVOPS & POLICY LEAD",
+            organization="CloudScale Infrastructure Inc"
+        )
+        civic = User(
+            id=uuid.uuid4(),
+            email="justice@civictech.law",
+            hashed_password=hash_password("civic2026"),
+            full_name="Maya Lin",
+            role="CIVIC RIGHTS DIRECTOR",
+            organization="Access to Justice Project"
+        )
+        db.add_all([alex, judge, elena, marcus, civic])
         await db.commit()
 
 @router.post("/login", response_model=UserResponse)

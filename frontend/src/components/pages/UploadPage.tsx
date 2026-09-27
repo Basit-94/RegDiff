@@ -94,9 +94,289 @@ const FRAMEWORKS = [
   },
 ];
 
+export interface DemoPolicySuite {
+  id: string;
+  filename: string;
+  fileSize: string;
+  totalPages: number;
+  frameworkId: string;
+  frameworkName: string;
+  organization: string;
+  docTitle: string;
+  badge: string;
+  summary: string;
+  citation: string;
+  sections: ExtractedSection[];
+}
+
+export const DEMO_POLICY_SUITES: DemoPolicySuite[] = [
+  {
+    id: 'demo-cfpb',
+    filename: 'Apex_Financial_CFPB_1033_Consumer_Data_SOP.pdf',
+    fileSize: '184.2 KB',
+    totalPages: 3,
+    frameworkId: 'cfpb',
+    frameworkName: 'CFPB Rule 1033',
+    organization: 'Apex Financial Technologies LLC',
+    docTitle: 'SOP: Consumer Financial Data Invalidation & Retention',
+    badge: 'FINANCIAL DATA RIGHTS',
+    summary: '90-day retention clause breaches statutory 30-day post-offboarding data erasure ceiling under 12 CFR § 1033.351.',
+    citation: '12 CFR § 1033.351(a)(1)',
+    sections: [
+      {
+        clause_id: 'cfpb-sec-1',
+        page: 1,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'SOP: Consumer Financial Data Invalidation & Retention',
+        framework_id: 'cfpb',
+        citation: '12 CFR § 1033.351(a)(1)',
+        section_label: 'Section 1.2: Covered Data Scope & Authorized Access',
+        key_clause: 'Authorized third-party fintech representatives may access covered consumer account transactional histories and balance feeds pursuant to valid consumer consent tokens for strictly permitted purposes.',
+        remediated: 'Authorized third-party fintech representatives may access covered consumer account transactional histories and balance feeds pursuant to valid consumer consent tokens with verifiable audit logging.',
+        full_text: 'Authorized third-party fintech representatives may access covered consumer account transactional histories and balance feeds pursuant to valid consumer consent tokens for strictly permitted purposes.',
+      },
+      {
+        clause_id: 'cfpb-sec-2',
+        page: 2,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'SOP: Consumer Financial Data Invalidation & Retention',
+        framework_id: 'cfpb',
+        citation: '12 CFR § 1033.351(a)(1)',
+        section_label: 'Section 3.4: Data Retention Ceiling & Purge Schedule',
+        key_clause: 'Customer telemetry, transaction records, and authorization tokens shall be retained in active replication stores for a duration of ninety (90) calendar days subsequent to user offboarding or explicit consent invalidation.',
+        remediated: 'Customer telemetry and authorization tokens shall be expunged from all active stores within a mandatory ceiling of thirty (30) calendar days subsequent to user offboarding, with cryptographically verifiable audit logs.',
+        full_text: 'Customer telemetry, transaction records, and authorization tokens shall be retained in active replication stores for a duration of ninety (90) calendar days subsequent to user offboarding or explicit consent invalidation.',
+      },
+      {
+        clause_id: 'cfpb-sec-3',
+        page: 3,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'SOP: Consumer Financial Data Invalidation & Retention',
+        framework_id: 'cfpb',
+        citation: '12 CFR § 1033.351(a)(1)',
+        section_label: 'Section 5.1: Consent Revocation & Enclave Invalidation',
+        key_clause: 'Upon receiving consumer revocation notices, access tokens shall be queued for batch invalidation during scheduled weekend maintenance intervals.',
+        remediated: 'Upon receiving consumer revocation notices, access tokens shall be revoked immediately and data access terminated synchronously within ≤500ms.',
+        full_text: 'Upon receiving consumer revocation notices, access tokens shall be queued for batch invalidation during scheduled weekend maintenance intervals.',
+      },
+    ],
+  },
+  {
+    id: 'demo-eu-ai',
+    filename: 'CognitiveAI_EU_AI_Act_HighRisk_Governance_Manual.pdf',
+    fileSize: '248.6 KB',
+    totalPages: 5,
+    frameworkId: 'eu_ai',
+    frameworkName: 'EU AI Act & Bias Audit',
+    organization: 'Cognitive Intelligence Systems SA',
+    docTitle: 'High-Risk Automated Credit & Hiring Scoring Manual',
+    badge: 'AI GOVERNANCE',
+    summary: 'Autonomous scoring lacks synchronous stop-switch (≤500ms) and fails quarterly 4/5ths demographic parity audits.',
+    citation: 'EU Reg 2024/1689 Art. 14 • NYC Local Law 144',
+    sections: [
+      {
+        clause_id: 'eu-sec-1',
+        page: 2,
+        organization: 'Cognitive Intelligence Systems SA',
+        title: 'High-Risk Automated Credit & Hiring Scoring Manual',
+        framework_id: 'eu_ai',
+        citation: 'EU Reg 2024/1689 Art. 14 • NYC Local Law 144',
+        section_label: 'Section 5.2: Human Oversight & Synchronous Kill-Switch',
+        key_clause: 'Autonomous algorithmic credit decisions and hiring candidate rankings execute unconditionally without human override. In the event of system instability, manual intervention requests are processed asynchronously via administrative email queues within two (2) hours, with demographic selection rates uncalibrated.',
+        remediated: 'The automated decision scoring pipeline implements an immediate synchronous human override kill-switch with an enforced latency ceiling of ≤420ms, and mandates quarterly independent algorithmic bias audits guaranteeing an Adverse Impact Ratio of ≥80.0% across all protected groups.',
+        full_text: 'Autonomous algorithmic credit decisions and hiring candidate rankings execute unconditionally without human override. In the event of system instability, manual intervention requests are processed asynchronously via administrative email queues within two (2) hours, with demographic selection rates uncalibrated.',
+      },
+      {
+        clause_id: 'eu-sec-2',
+        page: 4,
+        organization: 'Cognitive Intelligence Systems SA',
+        title: 'High-Risk Automated Credit & Hiring Scoring Manual',
+        framework_id: 'eu_ai',
+        citation: 'EU Reg 2024/1689 Art. 14',
+        section_label: 'Section 7.4: Zero-Training Prompt Isolation Enclave',
+        key_clause: 'Enterprise user inference inputs, confidential customer resumes, and prompt histories may be retained in centralized data lakes for future foundational model fine-tuning.',
+        remediated: 'Enterprise user inputs and inference payloads are processed in ephemeral zero-retention enclaves and strictly prohibited from secondary foundational model fine-tuning or cross-tenant training.',
+        full_text: 'Enterprise user inference inputs, confidential customer resumes, and prompt histories may be retained in centralized data lakes for future foundational model fine-tuning.',
+      },
+    ],
+  },
+  {
+    id: 'demo-nydfs',
+    filename: 'Manhattan_Trust_NYDFS_500_Cybersecurity_Standard.pdf',
+    fileSize: '210.4 KB',
+    totalPages: 4,
+    frameworkId: 'nydfs',
+    frameworkName: 'NYDFS Part 500',
+    organization: 'Manhattan Trust Financial Group',
+    docTitle: 'Cybersecurity Architecture & Audit Trail Governance Policy',
+    badge: 'CYBER AUDIT TRAILS',
+    summary: '180-day audit log purge violates mandatory 3-year tamper-evident cryptographic trail under 23 NYCRR § 500.06.',
+    citation: '23 NYCRR § 500.06 & § 500.12',
+    sections: [
+      {
+        clause_id: 'nydfs-sec-1',
+        page: 3,
+        organization: 'Manhattan Trust Financial Group',
+        title: 'Cybersecurity Architecture & Audit Trail Governance Policy',
+        framework_id: 'nydfs',
+        citation: '23 NYCRR § 500.06 & § 500.12',
+        section_label: 'Section 4.1: Privileged Access Audit Trail Retention',
+        key_clause: 'System access audit logs and user credential alteration trails shall be archived to intermediate storage and purged after a rolling retention window of one hundred eighty (180) days to reduce storage overhead.',
+        remediated: 'System access and administrative activities shall be continuously streamed to an append-only SHA-256 cryptographic ledger with 3-year retention, tamper-evident hash chaining, and mandatory MFA token rotation.',
+        full_text: 'System access audit logs and user credential alteration trails shall be archived to intermediate storage and purged after a rolling retention window of one hundred eighty (180) days to reduce storage overhead.',
+      },
+    ],
+  },
+  {
+    id: 'demo-gdpr',
+    filename: 'EuroCloud_GDPR_Security_Incident_Escalation_Protocol.pdf',
+    fileSize: '196.1 KB',
+    totalPages: 3,
+    frameworkId: 'gdpr',
+    frameworkName: 'EU GDPR (Art. 33 & 17)',
+    organization: 'EuroCloud Data Solutions BV',
+    docTitle: 'Enterprise Data Protection & Supervisory Notification SOP',
+    badge: 'DATA PROTECTION',
+    summary: '14-day preliminary assessment violates mandatory 72-hour supervisory breach notification SLA under Article 33.',
+    citation: 'EU Regulation 2016/679 • Article 33(1)',
+    sections: [
+      {
+        clause_id: 'gdpr-sec-1',
+        page: 2,
+        organization: 'EuroCloud Data Solutions BV',
+        title: 'Enterprise Data Protection & Supervisory Notification SOP',
+        framework_id: 'gdpr',
+        citation: 'EU Regulation 2016/679 • Article 33(1)',
+        section_label: 'Section 2.3: Supervisory Authority Notification SLA',
+        key_clause: 'In the event of an unverified data security incident or unauthorized access, the internal incident response team shall conduct an asynchronous internal preliminary assessment within fourteen (14) business days prior to notifying supervisory authorities.',
+        remediated: 'In the event of a personal data breach, the Data Protection Officer shall notify the competent supervisory authority without undue delay and, where feasible, not later than 72 hours after having become aware of it per GDPR Article 33.',
+        full_text: 'In the event of an unverified data security incident or unauthorized access, the internal incident response team shall conduct an asynchronous internal preliminary assessment within fourteen (14) business days prior to notifying supervisory authorities.',
+      },
+    ],
+  },
+  {
+    id: 'demo-hipaa',
+    filename: 'OmniHealth_HIPAA_ePHI_Security_Encryption_Charter.pdf',
+    fileSize: '232.8 KB',
+    totalPages: 4,
+    frameworkId: 'hipaa',
+    frameworkName: 'HIPAA Security Rule',
+    organization: 'OmniHealth Hospital Network',
+    docTitle: 'Protected Health Information Safeguards & Breach Protocol',
+    badge: 'HEALTH DATA SECURITY',
+    summary: 'Unencrypted cold storage data lakes and 90-day breach notice violate FIPS AES-256 and 60-day federal ceiling.',
+    citation: '45 CFR § 164.312(a)(2)(iv) & § 164.404',
+    sections: [
+      {
+        clause_id: 'hipaa-sec-1',
+        page: 3,
+        organization: 'OmniHealth Hospital Network',
+        title: 'Protected Health Information Safeguards & Breach Protocol',
+        framework_id: 'hipaa',
+        citation: '45 CFR § 164.312(a)(2)(iv) & § 164.404',
+        section_label: 'Section 6.8: ePHI Storage Safeguards & Breach Notification',
+        key_clause: 'Electronic protected health information (ePHI) archived in secondary analytics cold storage may utilize standard unencrypted data lakes behind perimeter firewalls, with security breach disclosures made within ninety (90) calendar days.',
+        remediated: 'All electronic protected health information (ePHI) at rest and in transit shall be encrypted utilizing FIPS 140-2 validated AES-256 bit encryption under 45 CFR § 164.312(a)(2)(iv), with individual breach notifications dispatched without unreasonable delay and in no case later than 60 calendar days under 45 CFR § 164.404.',
+        full_text: 'Electronic protected health information (ePHI) archived in secondary analytics cold storage may utilize standard unencrypted data lakes behind perimeter firewalls, with security breach disclosures made within ninety (90) calendar days.',
+      },
+    ],
+  },
+  {
+    id: 'demo-ccpa',
+    filename: 'Pacific_Retail_CCPA_Consumer_Rights_Charter.pdf',
+    fileSize: '175.5 KB',
+    totalPages: 3,
+    frameworkId: 'ccpa',
+    frameworkName: 'California CCPA / CPRA',
+    organization: 'Pacific Retail Technologies Inc',
+    docTitle: 'California Consumer Privacy Act (CCPA/CPRA) Compliance Manual',
+    badge: 'CONSUMER PRIVACY',
+    summary: '90-day consumer request fulfillment exceeds statutory 45-day California statutory ceiling under Cal. Civ. Code § 1798.130.',
+    citation: 'Cal. Civ. Code § 1798.130 & § 1798.120',
+    sections: [
+      {
+        clause_id: 'ccpa-sec-1',
+        page: 1,
+        organization: 'Pacific Retail Technologies Inc',
+        title: 'California Consumer Privacy Act (CCPA/CPRA) Compliance Manual',
+        framework_id: 'ccpa',
+        citation: 'Cal. Civ. Code § 1798.130 & § 1798.120',
+        section_label: 'Section 1.5: Consumer Request Fulfillment Timelines',
+        key_clause: 'Consumer verified requests for personal information disclosure, deletion, or correction shall be processed in the ordinary course of business within ninety (90) calendar days of receipt.',
+        remediated: 'Consumer requests to exercise CCPA/CPRA rights (access, deletion, correction) shall be fulfilled within forty-five (45) calendar days pursuant to Cal. Civ. Code § 1798.130, and opt-out requests processed within fifteen (15) business days.',
+        full_text: 'Consumer verified requests for personal information disclosure, deletion, or correction shall be processed in the ordinary course of business within ninety (90) calendar days of receipt.',
+      },
+    ],
+  },
+  {
+    id: 'demo-multi',
+    filename: 'Enterprise_Master_Multi_Statute_Policy_Suite.pdf',
+    fileSize: '418.0 KB',
+    totalPages: 6,
+    frameworkId: 'cfpb',
+    frameworkName: 'Multi-Statute Master Suite',
+    organization: 'Apex Financial Technologies LLC',
+    docTitle: 'Enterprise Master Regulatory Compliance & Security Policy 2026',
+    badge: 'CROSS-STATUTE SUITE',
+    summary: 'Spans CFPB Rule 1033, EU AI Act Art. 14, NYDFS 500, and HIPAA across 4 distinct operational clauses.',
+    citation: 'Comprehensive Multi-Statute Compliance Suite',
+    sections: [
+      {
+        clause_id: 'multi-sec-1',
+        page: 1,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'Enterprise Master Regulatory Compliance & Security Policy 2026',
+        framework_id: 'cfpb',
+        citation: '12 CFR § 1033.351(a)(1)',
+        section_label: 'Section 1.0 (CFPB 1033): Data Retention & Invalidation',
+        key_clause: 'Customer telemetry, transaction records, and authorization tokens shall be retained in active replication stores for a duration of ninety (90) calendar days subsequent to user offboarding or explicit consent invalidation.',
+        remediated: 'Customer telemetry and authorization tokens shall be expunged from all active stores within a mandatory ceiling of thirty (30) calendar days subsequent to user offboarding, with cryptographically verifiable audit logs.',
+        full_text: 'Customer telemetry, transaction records, and authorization tokens shall be retained in active replication stores for a duration of ninety (90) calendar days subsequent to user offboarding or explicit consent invalidation.',
+      },
+      {
+        clause_id: 'multi-sec-2',
+        page: 2,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'Enterprise Master Regulatory Compliance & Security Policy 2026',
+        framework_id: 'eu_ai',
+        citation: 'EU Reg 2024/1689 Art. 14',
+        section_label: 'Section 2.0 (EU AI Act): High-Risk Model Governance',
+        key_clause: 'Autonomous algorithmic credit decisions and hiring candidate rankings execute unconditionally without human override. In the event of system instability, manual intervention requests are processed asynchronously via administrative email queues within two (2) hours.',
+        remediated: 'The automated decision scoring pipeline implements an immediate synchronous human override kill-switch with an enforced latency ceiling of ≤420ms, and mandates quarterly independent algorithmic bias audits guaranteeing an Adverse Impact Ratio of ≥80.0% across all protected groups.',
+        full_text: 'Autonomous algorithmic credit decisions and hiring candidate rankings execute unconditionally without human override. In the event of system instability, manual intervention requests are processed asynchronously via administrative email queues within two (2) hours.',
+      },
+      {
+        clause_id: 'multi-sec-3',
+        page: 4,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'Enterprise Master Regulatory Compliance & Security Policy 2026',
+        framework_id: 'nydfs',
+        citation: '23 NYCRR § 500.06',
+        section_label: 'Section 3.0 (NYDFS Part 500): Privileged Access Audit Trails',
+        key_clause: 'System access audit logs and user credential alteration trails shall be archived to intermediate storage and purged after a rolling retention window of one hundred eighty (180) days to reduce storage overhead.',
+        remediated: 'System access and administrative activities shall be continuously streamed to an append-only SHA-256 cryptographic ledger with 3-year retention, tamper-evident hash chaining, and mandatory MFA token rotation.',
+        full_text: 'System access audit logs and user credential alteration trails shall be archived to intermediate storage and purged after a rolling retention window of one hundred eighty (180) days to reduce storage overhead.',
+      },
+      {
+        clause_id: 'multi-sec-4',
+        page: 6,
+        organization: 'Apex Financial Technologies LLC',
+        title: 'Enterprise Master Regulatory Compliance & Security Policy 2026',
+        framework_id: 'hipaa',
+        citation: '45 CFR § 164.312(a)(2)(iv)',
+        section_label: 'Section 4.0 (HIPAA): ePHI Safeguards & Breach Window',
+        key_clause: 'Electronic protected health information (ePHI) archived in secondary analytics cold storage may utilize standard unencrypted data lakes behind perimeter firewalls, with security breach disclosures made within ninety (90) calendar days.',
+        remediated: 'All electronic protected health information (ePHI) at rest and in transit shall be encrypted utilizing FIPS 140-2 validated AES-256 bit encryption under 45 CFR § 164.312(a)(2)(iv), with individual breach notifications dispatched without unreasonable delay and in no case later than 60 calendar days under 45 CFR § 164.404.',
+        full_text: 'Electronic protected health information (ePHI) archived in secondary analytics cold storage may utilize standard unencrypted data lakes behind perimeter firewalls, with security breach disclosures made within ninety (90) calendar days.',
+      },
+    ],
+  },
+];
+
 export const UploadPage: React.FC<UploadPageProps> = ({ onScanComplete }) => {
   const [selectedFrameworkId, setSelectedFrameworkId] = useState('cfpb');
   const [inputMode, setInputMode] = useState<'upload' | 'paste'>('upload');
+  const [isDragOverDropzone, setIsDragOverDropzone] = useState(false);
   
   // Initially EMPTY as requested by the user
   const [policyText, setPolicyText] = useState('');
@@ -111,7 +391,25 @@ export const UploadPage: React.FC<UploadPageProps> = ({ onScanComplete }) => {
 
   const [parsingFile, setParsingFile] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [fullAuditing, setFullAuditing] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleLoadDemoSuite = (demo: DemoPolicySuite) => {
+    setErrorMsg(null);
+    setFileName(demo.filename);
+    setFileSize(demo.fileSize);
+    setTotalPages(demo.totalPages);
+    setExtractedSections(demo.sections);
+    setSelectedSectionIndex(0);
+    if (demo.sections.length > 0) {
+      const first = demo.sections[0];
+      setPolicyText(first.key_clause);
+      setSelectedFrameworkId(first.framework_id || demo.frameworkId);
+      setActiveOrg(first.organization);
+      setActiveDocTitle(first.title);
+      setActiveSectionLabel(first.section_label);
+    }
+  };
 
   // Enterprise Multi-Statute Cross-Audit (Omni-Scan)
   const [omniLoading, setOmniLoading] = useState(false);
@@ -198,8 +496,6 @@ export const UploadPage: React.FC<UploadPageProps> = ({ onScanComplete }) => {
       sectionLabel: activeSectionLabel,
     });
   };
-
-  const [fullAuditing, setFullAuditing] = useState(false);
 
   const handleAuditFullDocument = async (overrideClauses?: {
     clause_id: string;
@@ -517,32 +813,137 @@ export const UploadPage: React.FC<UploadPageProps> = ({ onScanComplete }) => {
             />
 
             {!fileName ? (
-              /* Empty Drag & Drop Zone */
-              <div
-                onClick={() => document.getElementById('file-upload-input')?.click()}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                    handleFileUpload(e.dataTransfer.files[0]);
-                  }
-                }}
-                className="p-8 sm:p-10 rounded-2xl border-2 border-dashed border-coral/30 hover:border-coral bg-apricot-50/50 dark:bg-[#0a0f1d] hover:bg-apricot-50 dark:hover:bg-[#0d1426] transition-all text-center cursor-pointer space-y-3 group"
-              >
-                <div className="w-14 h-14 rounded-2xl bg-coral/15 text-coral flex items-center justify-center mx-auto ring-1 ring-coral/30 group-hover:scale-105 transition-transform">
-                  <span className="material-symbols-outlined text-3xl">upload_file</span>
-                </div>
-                <div className="space-y-1">
-                  <div className="text-sm font-bold text-forest-ink dark:text-white">
-                    Click to browse or drag &amp; drop document
+              <div className="space-y-5">
+                {/* Drag & Drop Upload Zone */}
+                <div
+                  onClick={() => document.getElementById('file-upload-input')?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'copy';
+                    setIsDragOverDropzone(true);
+                  }}
+                  onDragLeave={() => setIsDragOverDropzone(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragOverDropzone(false);
+                    const demoId = e.dataTransfer.getData('application/regdiff-demo') || e.dataTransfer.getData('text/plain');
+                    if (demoId) {
+                      const demo = DEMO_POLICY_SUITES.find((d) => d.id === demoId);
+                      if (demo) {
+                        handleLoadDemoSuite(demo);
+                        return;
+                      }
+                    }
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileUpload(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  className={`p-8 sm:p-10 rounded-2xl border-2 border-dashed transition-all text-center cursor-pointer space-y-3 group ${
+                    isDragOverDropzone
+                      ? 'border-coral bg-coral/10 scale-[1.01] ring-4 ring-coral/20'
+                      : 'border-coral/30 hover:border-coral bg-apricot-50/50 dark:bg-[#0a0f1d] hover:bg-apricot-50 dark:hover:bg-[#0d1426]'
+                  }`}
+                >
+                  <div className={`w-14 h-14 rounded-2xl bg-coral/15 text-coral flex items-center justify-center mx-auto ring-1 ring-coral/30 transition-transform ${isDragOverDropzone ? 'scale-110' : 'group-hover:scale-105'}`}>
+                    <span className="material-symbols-outlined text-3xl">upload_file</span>
                   </div>
-                  <div className="text-xs text-forest-muted dark:text-slate-400 font-mono">
-                    Supports .PDF, .DOCX, .TXT, .MD (Up to 25 MB)
+                  <div className="space-y-1">
+                    <div className="text-sm font-bold text-forest-ink dark:text-white flex items-center justify-center gap-2">
+                      <span>Click to browse or drag &amp; drop document</span>
+                      {isDragOverDropzone && (
+                        <span className="px-2 py-0.5 rounded-full bg-coral text-white text-[10px] font-mono animate-pulse">
+                          Drop to Load!
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-forest-muted dark:text-slate-400 font-mono">
+                      Supports .PDF, .DOCX, .TXT, .MD (Up to 25 MB)
+                    </div>
+                  </div>
+                  <span className="inline-flex px-3 py-1 rounded-full bg-white dark:bg-slate-800 border border-coral/20 text-xs font-mono text-coral font-semibold">
+                    e.g. Apex_Financial_CFPB_1033_Consumer_Data_SOP.pdf
+                  </span>
+                </div>
+
+                {/* Helper Section: Pre-Packaged Demo Policy PDF Tray */}
+                <div className="space-y-3 pt-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-left">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-coral text-lg">folder_shared</span>
+                      <span className="text-xs font-mono font-bold text-forest-ink dark:text-white">
+                        Don’t have a document on hand? Click or Drag &amp; Drop a Demo PDF:
+                      </span>
+                    </div>
+                    <span className="text-[10px] font-mono text-forest-muted dark:text-slate-400">
+                      7 Authentic Pre-Packaged Policy Suites
+                    </span>
+                  </div>
+
+                  <p className="text-[11px] text-forest-muted dark:text-slate-400 font-sans">
+                    Each demo policy is a realistic corporate contract or manual with real section citations and statutory breach parameters ready for instant multi-clause verification.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {DEMO_POLICY_SUITES.map((demo) => (
+                      <div
+                        key={demo.id}
+                        draggable={true}
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', demo.id);
+                          e.dataTransfer.setData('application/regdiff-demo', demo.id);
+                          e.dataTransfer.effectAllowed = 'copy';
+                        }}
+                        onClick={() => handleLoadDemoSuite(demo)}
+                        className="p-3.5 rounded-2xl bg-white dark:bg-[#0a0f1d] border border-coral/25 hover:border-coral hover:bg-apricot-50/70 dark:hover:bg-[#10182b] transition-all cursor-grab active:cursor-grabbing text-left space-y-2 group shadow-xs hover:shadow-md"
+                        title="Click to load into parser or drag directly into the dropzone above"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <div className="w-8 h-8 rounded-xl bg-red-500/15 text-red-600 flex items-center justify-center font-bold text-[10px] shrink-0 group-hover:scale-105 transition-transform">
+                              PDF
+                            </div>
+                            <div className="min-w-0">
+                              <div className="text-xs font-mono font-bold text-forest-ink dark:text-white truncate group-hover:text-coral transition-colors">
+                                {demo.filename}
+                              </div>
+                              <div className="text-[10px] text-forest-muted dark:text-slate-400 font-mono flex items-center gap-1.5">
+                                <span>{demo.fileSize}</span>
+                                <span>•</span>
+                                <span>{demo.totalPages} Pages</span>
+                                <span>•</span>
+                                <span className="text-coral dark:text-coral-accent font-semibold">{demo.frameworkName}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <span className="material-symbols-outlined text-forest-muted dark:text-slate-500 group-hover:text-coral text-base shrink-0 group-hover:translate-x-0.5 transition-all">
+                            drag_indicator
+                          </span>
+                        </div>
+
+                        <div className="text-[11px] text-forest-muted dark:text-slate-400 line-clamp-2 leading-relaxed font-sans">
+                          {demo.summary}
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1 border-t border-coral/10 dark:border-slate-800 text-[10px] font-mono">
+                          <span className="text-forest-muted dark:text-slate-400 truncate max-w-[180px]">
+                            {demo.organization}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLoadDemoSuite(demo);
+                            }}
+                            className="px-2 py-0.5 rounded-lg bg-coral/10 hover:bg-coral text-coral hover:text-white font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                          >
+                            <span>Load PDF</span>
+                            <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <span className="inline-flex px-3 py-1 rounded-full bg-white dark:bg-slate-800 border border-coral/20 text-xs font-mono text-coral font-semibold">
-                  e.g. RegDiff Test Policy Suite.pdf
-                </span>
               </div>
             ) : (
               /* Parsed Document Preview Card */

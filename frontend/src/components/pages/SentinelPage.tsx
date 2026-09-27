@@ -4,14 +4,18 @@ import {
   simulateRegulatoryShift, 
   fetchLiveRegulatoryFeed, 
   fetchWebhooks, 
-  testWebhookDispatch 
+  testWebhookDispatch,
+  batchRemediateVaultPolicies
 } from '../../lib/api';
 import type { SentinelStatus, LiveFeedResponse, WebhookChannel } from '../../lib/api';
 
 interface SentinelPageProps {
   onGoToVault: () => void;
+  onOpenVaultDiff?: () => void;
+  onGoToProof?: () => void;
   onRefreshData: () => void;
   onSimulateLawShift?: (res: Record<string, unknown>) => void;
+  onDismissAlert?: () => void;
 }
 
 // Plain-English translations and guidance for everyday users
@@ -50,8 +54,11 @@ const PLAIN_ENGLISH_RULES: Record<string, { plainEnglish: string; appliesTo: str
 
 export const SentinelPage: React.FC<SentinelPageProps> = ({
   onGoToVault,
+  onOpenVaultDiff,
+  onGoToProof,
   onRefreshData,
   onSimulateLawShift,
+  onDismissAlert,
 }) => {
   const [data, setData] = useState<SentinelStatus | null>(null);
   const [loading, setLoading] = useState(true);
@@ -59,6 +66,12 @@ export const SentinelPage: React.FC<SentinelPageProps> = ({
   const [liveFeedLoading, setLiveFeedLoading] = useState(true);
   const [simulating, setSimulating] = useState(false);
   const [simulationResult, setSimulationResult] = useState<Record<string, unknown> | null>(null);
+  const [batchRemediating, setBatchRemediating] = useState(false);
+  const [remediatedSuccess, setRemediatedSuccess] = useState<{
+    remediated_count: number;
+    audit_block_index: number;
+    audit_hash: string;
+  } | null>(null);
 
   // Webhook state
   const [webhooks, setWebhooks] = useState<WebhookChannel[]>([]);
@@ -121,6 +134,7 @@ export const SentinelPage: React.FC<SentinelPageProps> = ({
   const handleSimulate = async () => {
     setSimulating(true);
     setSimulationResult(null);
+    setRemediatedSuccess(null);
     try {
       const res = await simulateRegulatoryShift();
       setSimulationResult(res);
@@ -133,6 +147,25 @@ export const SentinelPage: React.FC<SentinelPageProps> = ({
       alert(e.message || 'Simulation failed');
     } finally {
       setSimulating(false);
+    }
+  };
+
+  const handleAutoPatchVault = async () => {
+    setBatchRemediating(true);
+    try {
+      const res = await batchRemediateVaultPolicies();
+      await loadStatus();
+      onRefreshData();
+      setRemediatedSuccess({
+        remediated_count: res.remediated_count,
+        audit_block_index: res.audit_block_index,
+        audit_hash: res.audit_hash,
+      });
+      if (onDismissAlert) onDismissAlert();
+    } catch (err: any) {
+      alert(err.message || 'Batch auto-patch failed');
+    } finally {
+      setBatchRemediating(false);
     }
   };
 
@@ -253,7 +286,7 @@ export const SentinelPage: React.FC<SentinelPageProps> = ({
 
         {/* Live Simulation Output Card in Plain English */}
         {simulationResult && (
-          <div className="mt-4 p-5 rounded-2xl bg-white dark:bg-[#070c17] border-2 border-emerald-500 shadow-lg space-y-3 animate-fade-in text-xs font-mono">
+          <div className="mt-4 p-5 rounded-2xl bg-white dark:bg-[#070c17] border-2 border-emerald-500 shadow-lg space-y-4 animate-fade-in text-xs font-mono">
             <div className="flex items-center justify-between text-emerald-600 dark:text-emerald-400 font-bold">
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-base">check_circle</span>
@@ -262,27 +295,78 @@ export const SentinelPage: React.FC<SentinelPageProps> = ({
               <span>Proof Block #{(simulationResult as any).audit_block_index} Recorded</span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 font-sans text-xs space-y-1">
-              <div className="font-bold flex items-center gap-1 text-red-600 dark:text-red-400">
-                <span className="material-symbols-outlined text-sm">warning</span>
-                <span>Action Required: 1 Policy Now Violates the Law</span>
+            {remediatedSuccess ? (
+              <div className="p-4 rounded-xl bg-emerald-500/15 border-2 border-emerald-500/40 text-emerald-800 dark:text-emerald-300 font-sans text-xs space-y-2 animate-fade-in">
+                <div className="font-bold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
+                  <span className="material-symbols-outlined text-base">verified</span>
+                  <span>100% Compliant: Vault Successfully Patched</span>
+                </div>
+                <p className="leading-relaxed font-mono text-[11px]">
+                  All {remediatedSuccess.remediated_count} breached documents have been automatically updated to enforce the mandatory 30-day retention limit and cryptographically sealed into Merkle Ledger Block #{remediatedSuccess.audit_block_index}.
+                </p>
+                <div className="pt-2 flex items-center gap-2">
+                  <button
+                    onClick={onGoToVault}
+                    className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold cursor-pointer transition-colors shadow-xs flex items-center gap-1"
+                  >
+                    <span>View Clean Vault &rarr;</span>
+                  </button>
+                  {onGoToProof && (
+                    <button
+                      onClick={onGoToProof}
+                      className="px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-200 transition-colors cursor-pointer"
+                    >
+                      <span>Inspect FRE 902(13) Ledger &rarr;</span>
+                    </button>
+                  )}
+                </div>
               </div>
-              <p className="leading-relaxed">
-                Your <strong>Core Banking Data Lifecycle SOP (Section 4.2)</strong> was retaining records for 90 days. Because the CFPB lowered the allowable ceiling to 30 days, this policy is now marked as a <strong>Critical Breach</strong>.
-              </p>
-            </div>
+            ) : (
+              <>
+                <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-700 dark:text-red-300 font-sans text-xs space-y-1">
+                  <div className="font-bold flex items-center gap-1 text-red-600 dark:text-red-400">
+                    <span className="material-symbols-outlined text-sm">warning</span>
+                    <span>Action Required: 1 Policy Now Violates the Law</span>
+                  </div>
+                  <p className="leading-relaxed">
+                    Your <strong>Core Banking Data Lifecycle SOP (Section 4.2)</strong> was retaining records for 90 days. Because the CFPB lowered the allowable ceiling to 30 days, this policy is now marked as a <strong>Critical Breach</strong>.
+                  </p>
+                </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
-              <span className="text-forest-muted dark:text-slate-400 font-sans">
-                A legally verified 30-day patch has been synthesized and is ready for your review.
-              </span>
-              <button
-                onClick={onGoToVault}
-                className="px-4 py-2 rounded-xl bg-coral text-white font-bold flex items-center gap-1.5 shadow-xs cursor-pointer hover:bg-coral/90 transition-colors"
-              >
-                <span>Review &amp; Fix in Vault &rarr;</span>
-              </button>
-            </div>
+                <div className="flex flex-wrap items-center justify-between gap-3 text-xs pt-1">
+                  <span className="text-forest-muted dark:text-slate-400 font-sans">
+                    A legally verified 30-day patch has been synthesized and is ready to apply.
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={handleAutoPatchVault}
+                      disabled={batchRemediating}
+                      className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center gap-1.5 shadow-xs cursor-pointer transition-colors"
+                      title="Auto-remediate all vault documents to 30 days without leaving Sentinel"
+                    >
+                      <span className={`material-symbols-outlined text-sm ${batchRemediating ? 'animate-spin' : ''}`}>
+                        {batchRemediating ? 'refresh' : 'bolt'}
+                      </span>
+                      <span>{batchRemediating ? 'Patching Vault...' : '⚡ 1-Click Auto-Patch Vault'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        if (onOpenVaultDiff) {
+                          onOpenVaultDiff();
+                        } else {
+                          onGoToVault();
+                        }
+                      }}
+                      className="px-4 py-2 rounded-xl bg-coral text-white font-bold flex items-center gap-1.5 shadow-xs cursor-pointer hover:bg-coral/90 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-sm">difference</span>
+                      <span>Review Diff &amp; Patch in Vault &rarr;</span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -540,6 +624,53 @@ export const SentinelPage: React.FC<SentinelPageProps> = ({
               </div>
             ))}
           </div>
+        )}
+      </div>
+
+      {/* Next Step Workflow Banner: Step 3 -> Step 4 */}
+      <div className="p-6 rounded-3xl bg-gradient-to-r from-purple-500/15 via-indigo-500/10 to-emerald-500/15 border-2 border-purple-500/40 shadow-clay dark:shadow-dark-clay space-y-3 font-mono">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="text-[11px] uppercase tracking-wider text-purple-700 dark:text-purple-300 font-bold flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span>
+              <span>Next Milestone: Step 4 of 5</span>
+            </div>
+            <h3 className="font-display font-bold text-lg text-forest-ink dark:text-white">
+              Cryptographic Proof &amp; FRE 902(13) Attestation
+            </h3>
+            <p className="text-xs text-forest-muted dark:text-slate-300">
+              Inspect immutable SHA-256 Merkle Ledger blocks, verify hash chain integrity, and generate court-admissible legal certificates.
+            </p>
+          </div>
+
+          {onGoToProof && (
+            <button
+              onClick={onGoToProof}
+              className="btn-iridescent px-6 py-3.5 rounded-full text-white font-bold text-xs sm:text-sm shadow-neon-coral flex items-center gap-2 cursor-pointer self-start sm:self-auto shrink-0 transform hover:-translate-y-0.5 transition-all"
+            >
+              <span>Proceed to Proof &amp; Certificate &rarr;</span>
+              <span className="material-symbols-outlined text-base">arrow_forward</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Navigation Footer */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-coral/15 font-mono text-xs">
+        <button
+          onClick={onGoToVault}
+          className="text-forest-muted dark:text-slate-400 hover:text-coral font-bold cursor-pointer transition-colors"
+        >
+          &larr; Back to Step 2: Policy Vault
+        </button>
+
+        {onGoToProof && (
+          <button
+            onClick={onGoToProof}
+            className="px-5 py-2.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
+          >
+            <span>4. Proof &amp; Certificate &rarr;</span>
+          </button>
         )}
       </div>
 

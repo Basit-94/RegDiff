@@ -813,23 +813,34 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
           </div>
         </div>
 
-        {/* Bottom Navigation Row: Ingest Another vs. Court Attestation */}
-        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800/60">
+        {/* Bottom Navigation Row: Step 1 -> Step 2 Vault / Step 4 Proof */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/60 font-mono text-xs">
           <button
             onClick={onNewScan}
-            className="text-xs font-mono font-bold text-forest-muted dark:text-slate-400 hover:text-coral transition-colors cursor-pointer flex items-center gap-1"
+            className="font-bold text-forest-muted dark:text-slate-400 hover:text-coral transition-colors cursor-pointer flex items-center gap-1"
           >
             <span>&larr;</span>
             <span>Ingest Another Document</span>
           </button>
 
-          <button
-            onClick={onGoToProof}
-            className="btn-iridescent px-5 py-2.5 rounded-xl text-white text-xs font-mono font-bold shadow-neon-coral flex items-center gap-1.5 cursor-pointer"
-          >
-            <span>View Court Attestation</span>
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
-          </button>
+          <div className="flex items-center gap-2.5">
+            {onGoToVault && (
+              <button
+                onClick={onGoToVault}
+                className="btn-iridescent px-5 py-2.5 rounded-xl text-white font-bold shadow-neon-coral flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>Proceed to Step 2: Policy Vault &rarr;</span>
+                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              </button>
+            )}
+
+            <button
+              onClick={onGoToProof}
+              className="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold flex items-center gap-1.5 cursor-pointer transition-colors border border-slate-300 dark:border-slate-700"
+            >
+              <span>4. Court Attestation &rarr;</span>
+            </button>
+          </div>
         </div>
 
       </div>

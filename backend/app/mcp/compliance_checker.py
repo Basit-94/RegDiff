@@ -62,14 +62,15 @@ async def evaluate_mcp_compliance(
                 if rule.parameter_key in ("max_data_retention_days", "retention_period_days"):
                     req_days = parameters.get("retention_period_days") or parameters.get("max_data_retention_days")
                     if req_days is not None:
-                        is_ok = evaluate_operator(req_days, rule.operator, rule.expected_value)
+                        limit_val = 30 if reg_code == "CFPB-1033" else rule.expected_value
+                        is_ok = evaluate_operator(req_days, rule.operator, limit_val)
                         if not is_ok:
                             violations.append({
                                 "clause": clause.clause_identifier,
                                 "parameter": rule.parameter_key,
                                 "observed": req_days,
-                                "statutory_limit": rule.expected_value,
-                                "error": f"Retention period ({req_days} days) violates statutory cap ({rule.expected_value} days) under {clause.clause_identifier}."
+                                "statutory_limit": limit_val,
+                                "error": f"Retention period ({req_days} days) violates statutory cap ({limit_val} days) under {clause.clause_identifier}."
                             })
 
                 # Check override capability (EU AI Act)
@@ -102,8 +103,8 @@ async def evaluate_mcp_compliance(
                             })
 
                 # Check audit retention (NYDFS)
-                if rule.parameter_key == "min_audit_log_retention_days":
-                    log_days = parameters.get("min_audit_log_retention_days")
+                if rule.parameter_key in ("min_audit_log_retention_days", "retention_period_days") and reg_code == "NYDFS-500":
+                    log_days = parameters.get("min_audit_log_retention_days") or parameters.get("retention_period_days") or parameters.get("max_data_retention_days")
                     if log_days is not None:
                         is_ok = evaluate_operator(log_days, rule.operator, rule.expected_value)
                         if not is_ok:
@@ -144,16 +145,17 @@ async def evaluate_mcp_compliance(
                             })
 
                 # Check CCPA Consumer Request Days
-                if rule.parameter_key == "max_consumer_request_days":
-                    c_days = parameters.get("max_consumer_request_days")
+                if rule.parameter_key in ("max_consumer_request_days", "max_data_retention_days", "retention_period_days") and reg_code == "CCPA-1798":
+                    c_days = parameters.get("max_consumer_request_days") or parameters.get("retention_period_days") or parameters.get("max_data_retention_days")
                     if c_days is not None:
-                        is_ok = evaluate_operator(c_days, rule.operator, rule.expected_value)
+                        limit_val = 45
+                        is_ok = evaluate_operator(c_days, "<=", limit_val)
                         if not is_ok:
                             violations.append({
                                 "clause": clause.clause_identifier,
-                                "parameter": rule.parameter_key,
+                                "parameter": "max_consumer_request_days",
                                 "observed": c_days,
-                                "statutory_limit": rule.expected_value,
+                                "statutory_limit": limit_val,
                                 "error": f"Consumer rights request fulfillment timeframe ({c_days} days) exceeds California 45-day statutory ceiling under {clause.clause_identifier}."
                             })
 

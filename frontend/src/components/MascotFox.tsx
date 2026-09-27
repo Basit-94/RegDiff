@@ -126,14 +126,14 @@ export const MascotFox: React.FC<MascotFoxProps> = ({ onFoxClick }) => {
       <button
         onClick={handleCardClick}
         className="mb-2 px-3 py-1.5 rounded-full bg-white/95 dark:bg-[#0c1220]/95 border border-coral/40 shadow-clay hover:scale-105 transition-all text-xs font-mono font-bold text-forest-ink dark:text-white flex items-center gap-1.5 cursor-pointer backdrop-blur-md"
-        title="Chat with Rusty AI Legal Assistant"
+        title="Chat with Rusty"
       >
         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span>🦊 Chat with Rusty AI</span>
+        <span>🦊 Chat with Rusty</span>
       </button>
 
       {/* 3D Card Shell (Clean without obstructive bottom bubble) */}
-      <div className="mascot-card-shell" title="Rusty — AI Legal Inspector (Click to inspect current status)">
+      <div className="mascot-card-shell" title="Rusty — Legal Inspector (Click to inspect current status)">
         <div 
           className="mascot-card-inner" 
           id="mascot-card" 

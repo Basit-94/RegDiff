@@ -9,7 +9,6 @@ import { ProofPage } from './components/pages/ProofPage';
 import { VaultPage } from './components/pages/VaultPage';
 import { SentinelPage } from './components/pages/SentinelPage';
 import { VerifyPage } from './components/pages/VerifyPage';
-import { GuidedWorkflowBar } from './components/GuidedWorkflowBar';
 import { MascotFox } from './components/MascotFox';
 import { MascotChatbot } from './components/MascotChatbot';
 import { CounselModal } from './components/CounselModal';
@@ -18,10 +17,13 @@ import { ConnectorsModal } from './components/ConnectorsModal';
 import { CustomRuleModal } from './components/CustomRuleModal';
 import { WordAddinModal } from './components/WordAddinModal';
 import { GRCModal } from './components/GRCModal';
+import { AISafetyModal } from './components/AISafetyModal';
+import { ConsensusModal } from './components/ConsensusModal';
 import { 
   fetchHealth, 
   verifyLedgerChain,
   savePolicyToVault,
+  batchRemediateVaultPolicies,
 } from './lib/api';
 
 import type { LedgerVerification, MCPComplianceResult, Policy, FullDocumentAuditResponse } from './lib/api';
@@ -57,7 +59,7 @@ export function App() {
   } | null>(null);
 
   // Guided Workflow Milestones State
-  const [milestones, setMilestones] = useState({
+  const [, setMilestones] = useState({
     hasIngested: false,
     hasAudited: false,
     hasCommitted: false,
@@ -78,7 +80,10 @@ export function App() {
   const [isCustomRulesOpen, setIsCustomRulesOpen] = useState(false);
   const [isWordAddinOpen, setIsWordAddinOpen] = useState(false);
   const [isGRCOpen, setIsGRCOpen] = useState(false);
+  const [isAISafetyOpen, setIsAISafetyOpen] = useState(false);
+  const [isConsensusOpen, setIsConsensusOpen] = useState(false);
   const [statutoryAlert, setStatutoryAlert] = useState<{ active: boolean; statute: string; description: string } | null>(null);
+  const [openBatchDiff, setOpenBatchDiff] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Synchronize theme with <html> class
@@ -210,43 +215,6 @@ export function App() {
     navigateTo('results');
   };
 
-  const handleStartQuickDemo = () => {
-    setMilestones((prev) => ({
-      ...prev,
-      hasIngested: true,
-      hasAudited: true,
-    }));
-    setScanData({
-      scanResult: {
-        compliant: false,
-        status: 'REJECTED',
-        jurisdiction: 'US_CFPB',
-        framework: 'CFPB Rule 1033',
-        version_tag: 'v2026.3.0',
-        violations: [{
-          clause: '12 CFR § 1033.351(a)(1)',
-          parameter: 'max_data_retention_days',
-          observed: 90,
-          statutory_limit: '30 days',
-          error: 'Retention period exceeds statutory cap of 30 days.'
-        }],
-        audit_block_index: 29,
-        audit_hash: '0x8f2a1768c34d1b7a...',
-        message: 'Violation detected: max_data_retention_days exceeds statutory cap',
-      },
-      frameworkId: 'cfpb',
-      inputText: `Section 4.2 - Retention and Archival Schedule:
-Apex Financial Technologies LLC retains all consumer financial records, transaction histories, and authorized account credential tokens for a period of ninety (90) calendar days following user offboarding. Records are stored in warm object storage for audit verification before scheduled cryptographic erasure.`,
-      remediatedText: `Section 4.2 - Retention and Archival Schedule:
-Apex Financial Technologies LLC retains all consumer financial records, transaction histories, and authorized account credential tokens for a period of thirty (30) calendar days following user offboarding. Records are stored in warm object storage for audit verification before scheduled cryptographic erasure.`,
-      citation: '12 CFR § 1033.351(a)(1) — Personal Financial Data Rights',
-      organization: 'Apex Financial Technologies LLC',
-      docTitle: 'Apex Master Data Governance & Retention Policy',
-      sectionLabel: 'Section 4.2',
-    });
-    navigateTo('results');
-  };
-
   const handleSaveToVault = async () => {
     if (!scanData) return;
     await savePolicyToVault({
@@ -265,6 +233,17 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
     }));
     loadData();
     setMascotTip("Policy successfully saved and sealed into your persistent Compliance Vault!");
+  };
+
+  const handleBatchPatchFromBanner = async () => {
+    try {
+      const res = await batchRemediateVaultPolicies();
+      setStatutoryAlert(null);
+      loadData();
+      setMascotTip(`✅ 1-Click Batch Patch Applied! All ${res.remediated_count} breached documents in your Vault are now COMPLIANT (Merkle Block #${res.audit_block_index}).`);
+    } catch {
+      navigateTo('vault');
+    }
   };
 
   const handleViewVaultPolicy = (policy: Policy) => {
@@ -323,6 +302,8 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
         onOpenCustomRules={() => setIsCustomRulesOpen(true)}
         onOpenWordAddin={() => setIsWordAddinOpen(true)}
         onOpenGRC={() => setIsGRCOpen(true)}
+        onOpenAISafety={() => setIsAISafetyOpen(true)}
+        onOpenConsensus={() => setIsConsensusOpen(true)}
       />
 
 
@@ -356,12 +337,25 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
               <span className="font-bold">Statutory Amendment Detected:</span>
               <span>CFPB Rule 1033 revised. 1 document in your Vault is now non-compliant.</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
-                onClick={() => navigateTo('vault')}
-                className="px-3 py-1 rounded-lg bg-white text-red-700 font-bold hover:bg-slate-100 transition-colors cursor-pointer text-xs"
+                onClick={() => {
+                  setOpenBatchDiff(true);
+                  navigateTo('vault');
+                }}
+                className="px-3 py-1 rounded-lg bg-white text-red-700 font-bold hover:bg-slate-100 transition-colors cursor-pointer text-xs flex items-center gap-1"
+                title="Open Vault and inspect side-by-side diffs"
               >
-                Review Diff &amp; Apply Patch &rarr;
+                <span className="material-symbols-outlined text-xs">difference</span>
+                <span>Review Diff &amp; Apply Patch &rarr;</span>
+              </button>
+              <button
+                onClick={handleBatchPatchFromBanner}
+                className="px-3 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold transition-colors cursor-pointer text-xs flex items-center gap-1 shadow-sm"
+                title="Apply statutory patch to all breached documents in Vault instantly"
+              >
+                <span className="material-symbols-outlined text-xs">bolt</span>
+                <span>1-Click Patch All</span>
               </button>
               <button
                 onClick={() => setStatutoryAlert(null)}
@@ -375,22 +369,13 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
         </div>
       )}
 
-      {/* Guided 5-Step Continuous Compliance Workflow Bar */}
-      {currentPage !== 'signin' && (
-        <GuidedWorkflowBar 
-          currentPage={currentPage} 
-          onNavigate={navigateTo} 
-          onStartQuickDemo={handleStartQuickDemo} 
-          milestones={milestones}
-        />
-      )}
-
       {/* Multi-Page Step Content Container */}
       <main className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 relative">
 
         
         {currentPage === 'landing' && (
           <LandingPage
+            user={user}
             onStart={() => {
               if (user) {
                 navigateTo('upload');
@@ -406,6 +391,15 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
                 organization: 'Apex Financial Technologies LLC',
               });
             }}
+            onNavigate={navigateTo}
+            onOpenAISafety={() => setIsAISafetyOpen(true)}
+            onOpenConsensus={() => setIsConsensusOpen(true)}
+            onOpenConnectors={() => setIsConnectorsOpen(true)}
+            onOpenCustomRules={() => setIsCustomRulesOpen(true)}
+            onOpenWordAddin={() => setIsWordAddinOpen(true)}
+            onOpenGRC={() => setIsGRCOpen(true)}
+            onOpenCICD={() => setIsCICDOpen(true)}
+            onDirectScan={handleScanFinished}
           />
         )}
 
@@ -423,13 +417,21 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
             onGoToSentinel={() => navigateTo('sentinel')}
             statutoryAlert={statutoryAlert}
             onDismissAlert={() => setStatutoryAlert(null)}
+            openBatchDiff={openBatchDiff}
+            onResetOpenBatchDiff={() => setOpenBatchDiff(false)}
           />
         )}
 
         {currentPage === 'sentinel' && (
           <SentinelPage
             onGoToVault={() => navigateTo('vault')}
+            onOpenVaultDiff={() => {
+              setOpenBatchDiff(true);
+              navigateTo('vault');
+            }}
+            onGoToProof={() => navigateTo('proof')}
             onRefreshData={loadData}
+            onDismissAlert={() => setStatutoryAlert(null)}
             onSimulateLawShift={() => {
               setStatutoryAlert({
                 active: true,
@@ -465,6 +467,9 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
           <ProofPage
             onNewScan={() => navigateTo('upload')}
             onGoHome={() => navigateTo('landing')}
+            onGoToInsurtech={() => navigateTo('verify')}
+            onGoToSentinel={() => navigateTo('sentinel')}
+            onGoToVault={() => navigateTo('vault')}
             initialBlockHeight={ledgerVerification.total_blocks}
             organization={scanData?.organization}
             docTitle={scanData?.docTitle}
@@ -476,6 +481,7 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
           <VerifyPage
             onGoHome={() => navigateTo('landing')}
             onGoToIngest={() => navigateTo('upload')}
+            onGoToProof={() => navigateTo('proof')}
           />
         )}
 
@@ -548,6 +554,38 @@ Apex Financial Technologies LLC retains all consumer financial records, transact
       <GRCModal
         isOpen={isGRCOpen}
         onClose={() => setIsGRCOpen(false)}
+      />
+
+      {/* AI Safety, Ethics & Governance Modal (Track 2) */}
+      <AISafetyModal
+        isOpen={isAISafetyOpen}
+        onClose={() => setIsAISafetyOpen(false)}
+        contractText={scanData?.inputText || `Article 4 - AI System Oversight:
+The automated credit decision scoring engine operates autonomously without synchronous human kill-switch. In the event of system instability, manual intervention requests are processed asynchronously via email queues within two (2) hours, with demographic selection rates uncalibrated.`}
+        docTitle={scanData?.docTitle || "AI Model Deployment & Vendor Agreement"}
+        organization={scanData?.organization || "Apex Financial Technologies LLC"}
+        onApplyRemediation={(remediated) => {
+          if (scanData) {
+            setScanData({
+              ...scanData,
+              remediatedText: remediated,
+              scanResult: { ...scanData.scanResult, compliant: true, status: 'APPROVED' },
+            });
+          }
+          loadData();
+          setMascotTip("AI Safety remediation applied! Synchronous stop-switch (≤420ms) and NYC 144 bias compliance covenants adopted.");
+        }}
+      />
+
+      {/* Multi-Model AI Statutory Consensus Modal (Track 5) */}
+      <ConsensusModal
+        isOpen={isConsensusOpen}
+        onClose={() => setIsConsensusOpen(false)}
+        policyText={scanData?.inputText || `Customer telemetry and authorization tokens shall be retained in active replication stores for a duration of ninety (90) calendar days subsequent to user offboarding or consent revocation.`}
+        frameworkId={scanData?.frameworkId || "cfpb"}
+        docTitle={scanData?.docTitle || "Master Corporate Operating Policy"}
+        organization={scanData?.organization || "Apex Financial Technologies LLC"}
+        sectionLabel={scanData?.sectionLabel || "Section 4.2"}
       />
 
     </div>
