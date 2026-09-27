@@ -55,7 +55,8 @@ log.md
 *.jpeg
 *.pdf
 code.html
-index.html
+/index.html
+!frontend/index.html
 
 # IDE & OS
 .vscode/
