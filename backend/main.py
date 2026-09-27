@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="Continuous Compliance and Regulatory Regression Testing Platform (Track 3 & Track 2)",
+    description="Enterprise Continuous Compliance and Regulatory Regression Testing Platform",
     version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs",
